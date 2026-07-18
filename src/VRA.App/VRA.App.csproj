@@ -8,4 +8,30 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Assets\Audio\" />
+    <Folder Include="Assets\Images\" />
+    <Folder Include="Assets\Videos\" />
+    <Folder Include="Configuration\" />
+    <Folder Include="Controls\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="Infrastructure\" />
+    <Folder Include="Resources\" />
+    <Folder Include="Views\" />
+    <Folder Include="Themes\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.10" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VRA.Common\VRA.Common.csproj" />
+    <ProjectReference Include="..\VRA.Core\VRA.Core.csproj" />
+  </ItemGroup>
+
 </Project>
