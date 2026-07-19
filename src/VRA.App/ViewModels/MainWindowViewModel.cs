@@ -8,5 +8,8 @@ public partial class MainWindowViewModel : ObservableObject
     private string title = "VRA Professional";
 
     [ObservableProperty]
-    private string status = "Ready";
+    private string status = "System Ready";
+
+    [ObservableProperty]
+    private string currentPatient = "No patient selected";
 }

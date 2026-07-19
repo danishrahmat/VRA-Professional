@@ -13,12 +13,9 @@
     <Folder Include="Assets\Images\" />
     <Folder Include="Assets\Videos\" />
     <Folder Include="Configuration\" />
-    <Folder Include="Controls\" />
     <Folder Include="Extensions\" />
     <Folder Include="Infrastructure\" />
     <Folder Include="Resources\" />
-    <Folder Include="Views\" />
-    <Folder Include="Themes\" />
   </ItemGroup>
 
   <ItemGroup>

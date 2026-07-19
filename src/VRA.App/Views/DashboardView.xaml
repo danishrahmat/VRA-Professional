@@ -1,0 +1,130 @@
+﻿<UserControl x:Class="VRA.App.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:VRA.App.Controls"
+             >
+ 
+
+    <Grid Margin="20">
+
+        <Grid.ColumnDefinitions>
+
+            <ColumnDefinition Width="280"/>
+
+            <ColumnDefinition Width="20"/>
+
+            <ColumnDefinition Width="*"/>
+
+        </Grid.ColumnDefinitions>
+
+        <!-- Left Menu -->
+
+        <Border Grid.Column="0"
+        Background="{DynamicResource SurfaceBrush}"
+        CornerRadius="12"
+        Padding="15">
+
+            <StackPanel>
+
+                <TextBlock
+            Text="Navigation"
+            FontSize="20"
+            FontWeight="Bold"
+            Margin="0,0,0,25"/>
+
+                <controls:NavigationButton
+                Title="Dashboard"
+                Icon="🏠"/>
+
+                <controls:NavigationButton
+                Title="Patients"
+                Icon="👤"/>
+
+                <controls:NavigationButton
+                Title="Hearing Test"
+                Icon="🎧"/>
+
+                <controls:NavigationButton
+                Title="Reinforcement"
+                Icon="📺"/>
+
+                <controls:NavigationButton
+                Title="Reports"
+                Icon="📊"/>
+
+                <controls:NavigationButton
+                Title="Settings"
+                Icon="⚙"/>
+            </StackPanel>
+
+        </Border>
+
+        <!-- Right Content -->
+
+        <Grid Grid.Column="2">
+
+            <Grid.RowDefinitions>
+
+                <RowDefinition Height="Auto"/>
+
+                <RowDefinition Height="20"/>
+
+                <RowDefinition Height="*"/>
+
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+
+            <DockPanel>
+
+                <TextBlock
+                    Text="Dashboard"
+                    FontSize="30"
+                    FontWeight="Bold"/>
+
+                <Ellipse
+                    Width="12"
+                    Height="12"
+                    Fill="LimeGreen"
+                    HorizontalAlignment="Right"/>
+
+            </DockPanel>
+
+            <!-- Cards Area -->
+
+            <UniformGrid
+                Grid.Row="2"
+                Columns="2"
+                Margin="0,10,0,0">
+
+                <controls:InfoCard
+    Icon="👤"
+    Title="Patient"
+    Value="None"
+    Description="No patient selected"/>
+
+                <controls:InfoCard
+    Icon="🎧"
+    Title="Audiometer"
+    Value="Disconnected"
+    Description="Waiting for device"/>
+
+                <controls:InfoCard
+    Icon="🖥"
+    Title="Displays"
+    Value="0 / 3"
+    Description="Connected screens"/>
+
+                <controls:InfoCard
+    Icon="▶"
+    Title="Session"
+    Value="Ready"
+    Description="System status"/>
+
+            </UniformGrid>
+
+        </Grid>
+
+    </Grid>
+
+</UserControl>
