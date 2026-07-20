@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Windows;
+using VRA.Core.Data;
 
 namespace VRA.App;
 
@@ -18,6 +19,9 @@ public partial class App : Application
     protected override async void OnStartup(StartupEventArgs e)
     {
         await _host.StartAsync();
+
+        // Create database if it doesn't exist
+        await DatabaseInitializer.InitializeAsync(_host.Services);
 
         var mainWindow = _host.Services.GetRequiredService<MainWindow>();
 
