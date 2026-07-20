@@ -8,6 +8,8 @@ public partial class App : Application
 {
     private readonly IHost _host;
 
+
+
     public App()
     {
         _host = Program.CreateHostBuilder().Build();
@@ -32,4 +34,6 @@ public partial class App : Application
 
         base.OnExit(e);
     }
+
+
 }

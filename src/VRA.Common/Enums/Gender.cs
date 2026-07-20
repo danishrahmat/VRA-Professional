@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace VRA.Common.Enums;
 
-namespace VRA.Common.Enums
+public enum Gender
 {
-    internal class Gender
-    {
-    }
+    Unknown = 0,
+    Male = 1,
+    Female = 2,
+    Other = 3
 }
