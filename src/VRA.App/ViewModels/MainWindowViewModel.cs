@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace VRA.App.ViewModels
+namespace VRA.App.ViewModels;
+
+public partial class MainWindowViewModel : ObservableObject
 {
-    internal class MainWindowModel
-    {
-    }
+    [ObservableProperty]
+    private string title = "VRA Professional";
+
+    [ObservableProperty]
+    private string status = "System Ready";
+
+    [ObservableProperty]
+    private string currentPatient = "No patient selected";
 }

@@ -1,0 +1,144 @@
+﻿<UserControl x:Class="VRA.App.Controls.InfoCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Border
+    x:Name="CardBorder"
+    Background="{DynamicResource SurfaceBrush}"
+    CornerRadius="12"
+    Margin="10"
+    Effect="{DynamicResource CardShadow}"
+    RenderTransformOrigin="0.5,0.5">
+
+        <Border.RenderTransform>
+
+            <TransformGroup>
+
+                <ScaleTransform
+        x:Name="CardScale"
+        ScaleX="1"
+        ScaleY="1"/>
+
+                <TranslateTransform
+        x:Name="CardTranslate"
+        Y="0"/>
+
+            </TransformGroup>
+
+        </Border.RenderTransform>
+
+        <Border.Triggers>
+
+            <EventTrigger RoutedEvent="MouseEnter">
+
+                <BeginStoryboard>
+
+                    <Storyboard>
+
+                        <DoubleAnimation
+                        Storyboard.TargetName="CardTranslate"
+                        Storyboard.TargetProperty="Y"
+                        To="-2"
+                        Duration="0:0:0.18"/>
+
+                        <DoubleAnimation
+                        Storyboard.TargetName="CardTranslate"
+                        Storyboard.TargetProperty="Y"
+                        To="0"
+                        Duration="0:0:0.18"/>
+
+                    </Storyboard>
+
+                </BeginStoryboard>
+
+            </EventTrigger>
+
+            <EventTrigger RoutedEvent="MouseLeave">
+
+                <BeginStoryboard>
+
+                    <Storyboard>
+
+                        <DoubleAnimation
+                    Storyboard.TargetName="CardScale"
+                    Storyboard.TargetProperty="ScaleX"
+                    To="1"
+                    Duration="0:0:0.18"/>
+
+                        <DoubleAnimation
+                    Storyboard.TargetName="CardScale"
+                    Storyboard.TargetProperty="ScaleY"
+                    To="1"
+                    Duration="0:0:0.18"/>
+
+                    </Storyboard>
+
+                </BeginStoryboard>
+
+            </EventTrigger>
+
+        </Border.Triggers>
+        <Grid>
+
+            <Grid.RowDefinitions>
+
+                <RowDefinition Height="5"/>
+
+                <RowDefinition Height="*"/>
+
+            </Grid.RowDefinitions>
+
+            <!-- Accent -->
+
+            <Border
+            Background="{DynamicResource AccentBrush}"
+            CornerRadius="12,12,0,0"/>
+
+            <!-- Content -->
+
+            <Grid
+            Grid.Row="1"
+            Margin="20">
+
+                <StackPanel>
+
+                    <!-- Icon + Title -->
+                    <StackPanel Orientation="Horizontal">
+
+                        <TextBlock
+            FontSize="22"
+            Text="{Binding Icon,
+            RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+                        <TextBlock
+            Margin="10,0,0,0"
+            FontSize="18"
+            FontWeight="Bold"
+            Text="{Binding Title,
+            RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+                    </StackPanel>
+
+                    <!-- Value -->
+                    <TextBlock
+        Margin="0,20,0,0"
+        FontSize="30"
+        Text="{Binding Value,
+        RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+                    <!-- Description -->
+                    <TextBlock
+        Margin="0,8,0,0"
+        Foreground="Gray"
+        Text="{Binding Description,
+        RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+                </StackPanel>
+
+            </Grid>
+
+        </Grid>
+
+    </Border>
+
+</UserControl>
