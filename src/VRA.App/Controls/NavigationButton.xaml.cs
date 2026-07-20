@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Input;
 
 namespace VRA.App.Controls;
 
@@ -9,6 +10,12 @@ public partial class NavigationButton : UserControl
     public NavigationButton()
     {
         InitializeComponent();
+
+        MouseLeftButtonUp += (_, _) =>
+        {
+            if (Command?.CanExecute(null) == true)
+                Command.Execute(null);
+        };
     }
 
     public string Title
@@ -76,5 +83,17 @@ public partial class NavigationButton : UserControl
             button.Root.Background = Brushes.Transparent;
             button.TitleText.FontWeight = FontWeights.SemiBold;
         }
+    }
+
+    public static readonly DependencyProperty CommandProperty =
+    DependencyProperty.Register(
+        nameof(Command),
+        typeof(ICommand),
+        typeof(NavigationButton));
+
+    public ICommand? Command
+    {
+        get => (ICommand?)GetValue(CommandProperty);
+        set => SetValue(CommandProperty, value);
     }
 }

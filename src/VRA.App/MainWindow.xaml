@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:views="clr-namespace:VRA.App.Views"
+    xmlns:controls="clr-namespace:VRA.App.Controls"
     mc:Ignorable="d"
     Title="VRA Professional"
     Width="1600"
@@ -92,8 +93,25 @@
         <!-- Content -->
 
         <Grid Grid.Row="1">
-            <views:DashboardView/>
 
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Sidebar -->
+            <controls:SidebarControl
+    Grid.Column="0"
+    DataContext="{Binding Sidebar}" />
+
+            <!-- Current Page -->
+            <ContentControl
+        Grid.Column="1"
+        Content="{Binding CurrentView}"/>
+
+        </Grid>
+        <Grid Grid.Row="1">
+            <ContentControl Content="{Binding CurrentView}" />
         </Grid>
 
         <!-- Footer -->

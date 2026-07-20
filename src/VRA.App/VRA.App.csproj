@@ -25,7 +25,6 @@
     <Folder Include="Assets\Videos\" />
     <Folder Include="Configuration\" />
     <Folder Include="Extensions\" />
-    <Folder Include="Infrastructure\" />
     <Folder Include="Resources\" />
   </ItemGroup>
 

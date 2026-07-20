@@ -1,0 +1,62 @@
+﻿<UserControl x:Class="VRA.App.Views.Pages.PatientsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid Margin="30">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <DockPanel>
+
+            <TextBlock Text="Patients"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       VerticalAlignment="Center"/>
+
+            <Button Content="+ New Patient"
+                    Width="150"
+                    Height="40"
+                    HorizontalAlignment="Right"
+                    DockPanel.Dock="Right"/>
+        </DockPanel>
+
+        <DataGrid Grid.Row="2"
+          ItemsSource="{Binding Patients}"
+          AutoGenerateColumns="False"
+          CanUserAddRows="False"
+          IsReadOnly="True">
+
+            <DataGrid.Columns>
+
+                <DataGridTextColumn
+            Header="IC / Passport"
+            Binding="{Binding IcPassport}"
+            Width="180"/>
+
+                <DataGridTextColumn
+            Header="Guardian"
+            Binding="{Binding GuardianName}"
+            Width="220"/>
+
+                <DataGridTextColumn
+            Header="Age"
+            Binding="{Binding AgeDisplay}"
+            Width="100"/>
+
+                <DataGridTextColumn
+            Header="Diagnosis"
+            Binding="{Binding Diagnosis}"
+            Width="*"/>
+
+            </DataGrid.Columns>
+
+        </DataGrid>
+
+    </Grid>
+
+</UserControl>

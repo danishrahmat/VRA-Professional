@@ -14,16 +14,18 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using VRA.App.ViewModels;
 
-namespace VRA.App.Controls
+namespace VRA.App.Views.Pages
 {
     /// <summary>
-    /// Interaction logic for SidebarControl.xaml
+    /// Interaction logic for PatientsView.xaml
     /// </summary>
-    public partial class SidebarControl : UserControl
+    public partial class PatientsView : UserControl
     {
-        public SidebarControl()
+        public PatientsView(PatientsViewModel vm)
         {
             InitializeComponent();
+
+            DataContext = vm;
         }
     }
 }

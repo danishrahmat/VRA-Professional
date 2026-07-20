@@ -19,11 +19,13 @@
 
             <controls:NavigationButton
          Title="Dashboard"
-         Icon="🏠"/>
+         Icon="🏠"
+         Command="{Binding DashboardCommand}"/>
 
             <controls:NavigationButton
          Title="Patients"
-         Icon="👤"/>
+         Icon="👤"
+         Command="{Binding PatientsCommand}"/>
 
             <controls:NavigationButton
          Title="Hearing Test"

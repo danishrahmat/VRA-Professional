@@ -8,11 +8,11 @@
 
   <ItemGroup>
     <Folder Include="Configuration\" />
+    <Folder Include="Services\Navigation\" />
     <Folder Include="Utilities\" />
     <Folder Include="Services\Audio\" />
     <Folder Include="Services\Display\" />
     <Folder Include="Services\Media\" />
-    <Folder Include="Services\Navigation\" />
   </ItemGroup>
 
   <ItemGroup>
