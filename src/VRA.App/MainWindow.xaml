@@ -110,9 +110,7 @@
         Content="{Binding CurrentView}"/>
 
         </Grid>
-        <Grid Grid.Row="1">
-            <ContentControl Content="{Binding CurrentView}" />
-        </Grid>
+
 
         <!-- Footer -->
 

@@ -8,60 +8,16 @@
     <Grid Margin="20">
 
         <Grid.ColumnDefinitions>
-
-            <ColumnDefinition Width="280"/>
-
-            <ColumnDefinition Width="20"/>
-
             <ColumnDefinition Width="*"/>
-
         </Grid.ColumnDefinitions>
 
         <!-- Left Menu -->
 
-        <Border Grid.Column="0"
-        Background="{DynamicResource SurfaceBrush}"
-        CornerRadius="12"
-        Padding="15">
-
-            <StackPanel>
-
-                <TextBlock
-            Text="Navigation"
-            FontSize="20"
-            FontWeight="Bold"
-            Margin="0,0,0,25"/>
-
-                <controls:NavigationButton
-                Title="Dashboard"
-                Icon="🏠"/>
-
-                <controls:NavigationButton
-                Title="Patients"
-                Icon="👤"/>
-
-                <controls:NavigationButton
-                Title="Hearing Test"
-                Icon="🎧"/>
-
-                <controls:NavigationButton
-                Title="Reinforcement"
-                Icon="📺"/>
-
-                <controls:NavigationButton
-                Title="Reports"
-                Icon="📊"/>
-
-                <controls:NavigationButton
-                Title="Settings"
-                Icon="⚙"/>
-            </StackPanel>
-
-        </Border>
+        
 
         <!-- Right Content -->
 
-        <Grid Grid.Column="2">
+        <Grid Grid.Column="0">
 
             <Grid.RowDefinitions>
 
