@@ -15,6 +15,12 @@
 
 		<ResourceDictionary Source="Shadows.xaml"/>
 
+        <ResourceDictionary Source="../Styles/Buttons.xaml"/>
+
+        <ResourceDictionary Source="../Styles/DataGrid.xaml"/>
+
+        <ResourceDictionary Source="../Styles/FormControls.xaml"/>
+
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

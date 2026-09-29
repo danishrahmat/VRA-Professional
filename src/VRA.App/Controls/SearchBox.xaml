@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="VRA.App.Controls.SearchBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Border
+        Height="40"
+        Background="{DynamicResource SurfaceBrush}"
+        BorderBrush="#454545"
+        BorderThickness="1"
+        CornerRadius="8">
+
+        <Grid>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Search Icon -->
+            <TextBlock
+                Grid.Column="0"
+                Text="⌕"
+                FontSize="22"
+                Foreground="{DynamicResource TextSecondaryBrush}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"/>
+
+            <!-- Search Text -->
+            <TextBox
+                Grid.Column="1"
+                x:Name="SearchTextBox"
+                Text="{Binding Text,
+                      RelativeSource={RelativeSource AncestorType=UserControl},
+                      Mode=TwoWay,
+                      UpdateSourceTrigger=PropertyChanged}"
+                Background="Transparent"
+                BorderThickness="0"
+                Foreground="{DynamicResource TextBrush}"
+                FontSize="14"
+                VerticalContentAlignment="Center"
+                Padding="0,0,12,0"/>
+
+        </Grid>
+
+    </Border>
+
+</UserControl>
