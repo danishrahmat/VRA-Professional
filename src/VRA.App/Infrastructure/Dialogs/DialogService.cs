@@ -24,4 +24,20 @@ public class DialogService : IDialogService
 
         return window.ShowDialog();
     }
+
+    public bool? ShowEditPatientDialog(Patient patient)
+    {
+        var patientService =
+            _serviceProvider.GetRequiredService<IPatientService>();
+
+        var viewModel = new EditPatientViewModel(
+            patientService,
+            patient);
+
+        var window = new EditPatientWindow(viewModel);
+
+        window.Owner = Application.Current.MainWindow;
+
+        return window.ShowDialog();
+    }
 }

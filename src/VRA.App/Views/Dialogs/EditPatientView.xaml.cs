@@ -18,9 +18,9 @@ namespace VRA.App.Views.Dialogs
     /// <summary>
     /// Interaction logic for NewPatientView.xaml
     /// </summary>
-    public partial class NewPatientView : UserControl
+    public partial class EditPatientView : UserControl
     {
-        public NewPatientView()
+        public EditPatientView()
         {
             InitializeComponent();
         }

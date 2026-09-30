@@ -86,12 +86,18 @@ public partial class PatientsViewModel : ObservableObject
     }
 
     [RelayCommand(CanExecute = nameof(CanEditPatient))]
-    private void EditPatient()
+    private async Task EditPatientAsync()
     {
         if (SelectedPatient is null)
             return;
 
-        // We will open the Edit Patient dialog here next.
+        var result =
+            _dialogService.ShowEditPatientDialog(SelectedPatient);
+
+        if (result == true)
+        {
+            await LoadPatientsAsync();
+        }
     }
 
     private bool CanEditPatient()
