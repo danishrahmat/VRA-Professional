@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using VRA.App.Controls;
 using VRA.App.Infrastructure.Dialogs;
 using VRA.App.Infrastructure.Navigation;
+using VRA.App.Infrastructure;
 using VRA.App.ViewModels;
 using VRA.App.Views;
 using VRA.App.Views.Dialogs;
@@ -28,24 +29,26 @@ public static class Program
 
                 // Services
                 services.AddScoped<IPatientService, PatientService>();
-
-                // ViewModels
-                // Views
-                services.AddTransient<DashboardView>();
-                services.AddTransient<PatientsView>();
                 services.AddSingleton<NavigationService>();
+                services.AddSingleton<CurrentPatientService>();
+
+                services.AddSingleton<IDialogService, DialogService>();
+                // ViewModels
+                services.AddTransient<DashboardViewModel>();
                 services.AddSingleton<MainWindowViewModel>();
                 services.AddTransient<PatientsViewModel>();
                 services.AddSingleton<SidebarViewModel>();
+                services.AddTransient<NewPatientViewModel>();
+
+                // Views
+                services.AddTransient<DashboardView>();
+                services.AddTransient<PatientsView>();
                 services.AddTransient<SidebarControl>();
 
                 // Windows
                 services.AddSingleton<MainWindow>();
-
-                services.AddTransient<NewPatientViewModel>();
                 services.AddTransient<NewPatientWindow>();
 
-                services.AddSingleton<IDialogService, DialogService>();
             });
     }
 

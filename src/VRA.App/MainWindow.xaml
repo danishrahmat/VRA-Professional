@@ -56,15 +56,21 @@
 
                 <!-- Patient -->
 
+                <!-- Current Patient -->
+
                 <ComboBox Grid.Column="1"
-                          Width="320"
-                          Height="38"
-                          HorizontalAlignment="Center"
-                          VerticalAlignment="Center">
-
-                    <ComboBoxItem>No patient selected</ComboBoxItem>
-
-                </ComboBox>
+          Width="320"
+          Height="38"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          IsEditable="True"
+          IsReadOnly="True"
+          IsHitTestVisible="False"
+          Focusable="False"
+          Text="{Binding CurrentPatient.FullName,
+                         Mode=OneWay,
+                         TargetNullValue=No patient selected,
+                         FallbackValue=No patient selected}"/>
 
                 <!-- Status -->
 

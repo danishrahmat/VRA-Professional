@@ -56,8 +56,12 @@
                 <controls:InfoCard
     Icon="👤"
     Title="Patient"
-    Value="None"
-    Description="No patient selected"/>
+    Value="{Binding CurrentPatient.FullName,
+                    TargetNullValue=None,
+                    FallbackValue=None}"
+    Description="{Binding CurrentPatient.IcPassportNumber,
+                          TargetNullValue=No patient selected,
+                          FallbackValue=No patient selected}"/>
 
                 <controls:InfoCard
     Icon="🎧"

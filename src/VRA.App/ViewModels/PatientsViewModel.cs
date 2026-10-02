@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
 using VRA.App.Infrastructure.Dialogs;
+//using VRA.App.Infrastructure.Patients;
+using VRA.App.Infrastructure;
 using VRA.Core.Interfaces;
 using VRA.Core.Models;
 
@@ -13,6 +15,7 @@ public partial class PatientsViewModel : ObservableObject
 {
     private readonly IPatientService _patientService;
     private readonly IDialogService _dialogService;
+    private readonly CurrentPatientService _currentPatientService;
 
     public ObservableCollection<Patient> Patients { get; }
         = new();
@@ -27,10 +30,12 @@ public partial class PatientsViewModel : ObservableObject
 
     public PatientsViewModel(
         IPatientService patientService,
-        IDialogService dialogService)
+        IDialogService dialogService,
+        CurrentPatientService currentPatientService)
     {
         _patientService = patientService;
         _dialogService = dialogService;
+        _currentPatientService = currentPatientService;
 
         PatientsView = CollectionViewSource.GetDefaultView(Patients);
         PatientsView.Filter = FilterPatient;
@@ -108,5 +113,10 @@ public partial class PatientsViewModel : ObservableObject
     partial void OnSelectedPatientChanged(Patient? value)
     {
         EditPatientCommand.NotifyCanExecuteChanged();
+
+        if (value is not null)
+        {
+            _currentPatientService.SetPatient(value);
+        }
     }
 }
