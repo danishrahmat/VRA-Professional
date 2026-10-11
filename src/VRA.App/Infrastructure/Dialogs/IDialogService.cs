@@ -6,4 +6,6 @@ public interface IDialogService
 {
     bool? ShowNewPatientDialog();
     bool? ShowEditPatientDialog(Patient patient);
+
+    bool ConfirmDeletePatient(string patientName);
 }

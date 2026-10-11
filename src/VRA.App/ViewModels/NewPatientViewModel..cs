@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.ObjectModel;
@@ -50,16 +51,73 @@ public partial class NewPatientViewModel : ObservableObject
     [ObservableProperty]
     private string notes = string.Empty;
 
+    [ObservableProperty]
+    private string validationMessage = string.Empty;
 
     public NewPatientViewModel(IPatientService patientService)
     {
         _patientService = patientService;
     }
 
-
     [RelayCommand]
     private async Task SavePatientAsync()
     {
+        ValidationMessage = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(MedicalRecordNumber))
+        {
+            ValidationMessage = "Medical Record Number is required.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(IcPassportNumber))
+        {
+            ValidationMessage = "IC / Passport number is required.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(FirstName))
+        {
+            ValidationMessage = "First Name is required.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(LastName))
+        {
+            ValidationMessage = "Last Name is required.";
+            return;
+        }
+
+        if (DateOfBirth.Date > DateTime.Today)
+        {
+            ValidationMessage = "Date of Birth cannot be in the future.";
+            return;
+        }
+
+        if (Gender == Gender.Unknown)
+        {
+            ValidationMessage = "Please select a gender.";
+            return;
+        }
+
+
+        if (await _patientService.MedicalRecordNumberExistsAsync(
+                MedicalRecordNumber.Trim()))
+        {
+            ValidationMessage =
+                "This Medical Record Number already exists.";
+            return;
+        }
+
+        if (await _patientService.IcPassportNumberExistsAsync(
+                IcPassportNumber.Trim()))
+        {
+            ValidationMessage =
+                "This IC / Passport number already exists.";
+            return;
+        }
+
+
         var patient = new Patient
         {
             MedicalRecordNumber = MedicalRecordNumber.Trim(),
@@ -79,7 +137,6 @@ public partial class NewPatientViewModel : ObservableObject
 
         RequestClose?.Invoke(true);
     }
-
 
     [RelayCommand]
     private void Cancel()

@@ -282,6 +282,15 @@
                 HorizontalAlignment="Right"
                 Margin="0,20,0,0">
 
+
+                <TextBlock
+                    Text="{Binding ValidationMessage}"
+                    Foreground="Red"
+                    TextWrapping="Wrap"
+                    Margin="0,8,0,8"
+                    FontSize="13" />
+
+
                 <Button
                     Content="Cancel"
                     Width="100"

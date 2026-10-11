@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+
 using Microsoft.Extensions.DependencyInjection;
 using VRA.App.Views.Dialogs;
 using VRA.App.ViewModels;
@@ -39,5 +40,18 @@ public class DialogService : IDialogService
         window.Owner = Application.Current.MainWindow;
 
         return window.ShowDialog();
+    }
+
+    public bool ConfirmDeletePatient(string patientName)
+    {
+        var result = MessageBox.Show(
+            $"Are you sure you want to delete patient '{patientName}'?\n\n" +
+            "This action cannot be undone.",
+            "Confirm Delete Patient",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning,
+            MessageBoxResult.No);
+
+        return result == MessageBoxResult.Yes;
     }
 }

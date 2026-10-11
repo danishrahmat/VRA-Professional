@@ -65,9 +65,11 @@ public partial class PatientsViewModel : ObservableObject
 
         return
             patient.FullName.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+            patient.MedicalRecordNumber.Contains(search, StringComparison.OrdinalIgnoreCase) ||
             patient.IcPassportNumber.Contains(search, StringComparison.OrdinalIgnoreCase) ||
             patient.ParentGuardian.Contains(search, StringComparison.OrdinalIgnoreCase) ||
             patient.Diagnosis.Contains(search, StringComparison.OrdinalIgnoreCase);
+
     }
 
     private async Task LoadPatientsAsync()
@@ -121,6 +123,34 @@ public partial class PatientsViewModel : ObservableObject
         _navigation.Navigate<PatientDetailsView>();
     }
 
+    [RelayCommand]
+    private async Task DeletePatientAsync()
+    {
+        if (SelectedPatient is null)
+            return;
+
+        var patientId = SelectedPatient.Id;
+        var patientName = SelectedPatient.FullName;
+
+        // Ask for confirmation first.
+        if (!_dialogService.ConfirmDeletePatient(patientName))
+            return;
+
+        // Delete the record from SQLite.
+        await _patientService.DeleteAsync(patientId);
+
+        // Clear the current patient only if it is the deleted patient.
+        if (_currentPatientService.CurrentPatient?.Id == patientId)
+        {
+            _currentPatientService.ClearPatient();
+        }
+
+        // Remove the patient from the displayed collection.
+        Patients.Remove(SelectedPatient);
+
+        // Clear the selection.
+        SelectedPatient = null;
+    }
     private bool CanViewDetails()
     {
         return SelectedPatient is not null;

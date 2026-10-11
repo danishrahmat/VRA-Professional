@@ -54,4 +54,46 @@ public class PatientService : IPatientService
         _context.Patients.Remove(patient);
         await _context.SaveChangesAsync();
     }
+
+
+    public async Task<bool> MedicalRecordNumberExistsAsync(
+        string medicalRecordNumber,
+        Guid? excludePatientId = null)
+    {
+        var normalized = medicalRecordNumber.Trim().ToUpper();
+
+        if (normalized.Length == 0)
+            return false;
+
+        var query = _context.Patients.Where(p =>
+            p.MedicalRecordNumber.Trim().ToUpper() == normalized);
+
+        if (excludePatientId.HasValue)
+        {
+            query = query.Where(p => p.Id != excludePatientId.Value);
+        }
+
+        return await query.AnyAsync();
+    }
+
+    public async Task<bool> IcPassportNumberExistsAsync(
+        string icPassportNumber,
+        Guid? excludePatientId = null)
+    {
+        var normalized = icPassportNumber.Trim().ToUpper();
+
+        if (normalized.Length == 0)
+            return false;
+
+        var query = _context.Patients.Where(p =>
+            p.IcPassportNumber.Trim().ToUpper() == normalized);
+
+        if (excludePatientId.HasValue)
+        {
+            query = query.Where(p => p.Id != excludePatientId.Value);
+        }
+
+        return await query.AnyAsync();
+    }
+
 }

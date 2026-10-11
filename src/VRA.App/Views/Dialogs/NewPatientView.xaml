@@ -276,28 +276,42 @@
             <!-- Actions                   -->
             <!-- ========================= -->
 
+
+            <!-- Actions -->
+
             <StackPanel
                 Grid.Row="3"
-                Orientation="Horizontal"
-                HorizontalAlignment="Right"
                 Margin="0,20,0,0">
 
-                <Button
-                    Content="Cancel"
-                    Width="100"
-                    Height="40"
-                    Command="{Binding CancelCommand}"
-                    Style="{StaticResource SecondaryButtonStyle}"/>
+                <TextBlock
+                    Text="{Binding ValidationMessage}"
+                    Foreground="Red"
+                    TextWrapping="Wrap"
+                    Margin="0,0,0,10"/>
 
-                <Button
-                    Content="Save Patient"
-                    Width="130"
-                    Height="40"
-                    Margin="8,0,0,0"
-                    Command="{Binding SavePatientCommand}"
-                    Style="{StaticResource PrimaryButtonStyle}"/>
+                <StackPanel
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+
+                    <Button
+                        Content="Cancel"
+                        Width="100"
+                        Height="40"
+                        Command="{Binding CancelCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"/>
+
+                    <Button
+                        Content="Save Patient"
+                        Width="130"
+                        Height="40"
+                        Margin="8,0,0,0"
+                        Command="{Binding SavePatientCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}"/>
+
+                </StackPanel>
 
             </StackPanel>
+
 
         </Grid>
 

@@ -52,6 +52,9 @@ public partial class EditPatientViewModel : ObservableObject
     [ObservableProperty]
     private string notes = string.Empty;
 
+    [ObservableProperty]
+    private string validationMessage = string.Empty;
+
 
     public EditPatientViewModel(
         IPatientService patientService,
@@ -75,17 +78,41 @@ public partial class EditPatientViewModel : ObservableObject
     }
 
 
+
     [RelayCommand]
     private async Task SavePatientAsync()
     {
+        ValidationMessage = string.Empty;
+
         var patient = await _patientService.GetByIdAsync(_patientId);
 
         if (patient is null)
         {
-            RequestClose?.Invoke(false);
+            ValidationMessage = "Patient could not be found.";
             return;
         }
 
+        // Check duplicate Medical Record Number.
+        if (await _patientService.MedicalRecordNumberExistsAsync(
+                MedicalRecordNumber.Trim(),
+                _patientId))
+        {
+            ValidationMessage =
+                "This Medical Record Number already exists.";
+            return;
+        }
+
+        // Check duplicate IC / Passport number.
+        if (await _patientService.IcPassportNumberExistsAsync(
+                IcPassportNumber.Trim(),
+                _patientId))
+        {
+            ValidationMessage =
+                "This IC / Passport number already exists.";
+            return;
+        }
+
+        // Only update the patient after validation succeeds.
         patient.MedicalRecordNumber = MedicalRecordNumber.Trim();
         patient.IcPassportNumber = IcPassportNumber.Trim();
         patient.FirstName = FirstName.Trim();
@@ -102,6 +129,7 @@ public partial class EditPatientViewModel : ObservableObject
 
         RequestClose?.Invoke(true);
     }
+
 
 
     [RelayCommand]

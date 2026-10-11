@@ -52,6 +52,15 @@
                         Command="{Binding EditPatientCommand}"
                         Style="{StaticResource SecondaryButtonStyle}"/>
 
+                    <Button
+                        Content="Delete Patient"
+                        Width="120"
+                        Height="40"
+                        Margin="0,0,8,0"
+                        Command="{Binding DeletePatientCommand}" 
+                        Style="{StaticResource SecondaryButtonStyle}"/>
+                        
+
                     <!-- Search -->
                     <controls:SearchBox
                         Width="350"
