@@ -34,12 +34,24 @@
 
             </StackPanel>
 
-            <Button
-                Grid.Column="1"
-                Content="← Back"
-                Command="{Binding BackCommand}"
-                Style="{StaticResource SecondaryButtonStyle}"
-                Width="100"/>
+            <StackPanel Grid.Column="1"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center">
+
+                <Button
+                    Content="Edit Patient"
+                    Command="{Binding EditPatientCommand}"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    Width="130"
+                    Margin="0,0,8,0"/>
+
+                <Button
+                    Content="← Back"
+                    Command="{Binding BackCommand}"
+                    Style="{StaticResource SecondaryButtonStyle}"
+                    Width="100"/>
+
+            </StackPanel>
 
         </Grid>
 
