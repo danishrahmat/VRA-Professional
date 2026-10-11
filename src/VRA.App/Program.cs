@@ -35,6 +35,7 @@ public static class Program
                 services.AddSingleton<IDialogService, DialogService>();
                 // ViewModels
                 services.AddTransient<DashboardViewModel>();
+                services.AddTransient<PatientDetailsViewModel>();
                 services.AddSingleton<MainWindowViewModel>();
                 services.AddTransient<PatientsViewModel>();
                 services.AddSingleton<SidebarViewModel>();
@@ -43,6 +44,7 @@ public static class Program
                 // Views
                 services.AddTransient<DashboardView>();
                 services.AddTransient<PatientsView>();
+                services.AddTransient<PatientDetailsView>();
                 services.AddTransient<SidebarControl>();
 
                 // Windows

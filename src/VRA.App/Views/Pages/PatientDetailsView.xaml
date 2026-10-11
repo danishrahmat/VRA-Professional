@@ -1,0 +1,254 @@
+﻿<UserControl x:Class="VRA.App.Views.Pages.PatientDetailsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid Margin="30">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+
+        <Grid Grid.Row="0">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel>
+
+                <TextBlock
+                    Text="Patient Details"
+                    FontSize="28"
+                    FontWeight="Bold"/>
+
+                <TextBlock
+                    Text="View patient information"
+                    Margin="0,4,0,0"
+                    Foreground="{DynamicResource TextSecondaryBrush}"
+                    FontSize="14"/>
+
+            </StackPanel>
+
+            <Button
+                Grid.Column="1"
+                Content="← Back"
+                Command="{Binding BackCommand}"
+                Style="{StaticResource SecondaryButtonStyle}"
+                Width="100"/>
+
+        </Grid>
+
+        <!-- Patient information -->
+
+        <Border
+            Grid.Row="2"
+            Background="{DynamicResource SurfaceBrush}"
+            BorderBrush="#454545"
+            BorderThickness="1"
+            CornerRadius="10"
+            Padding="30">
+
+            <ScrollViewer
+                VerticalScrollBarVisibility="Auto">
+
+                <Grid>
+
+                    <Grid.RowDefinitions>
+
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="Auto"/>
+
+                    </Grid.RowDefinitions>
+
+                    <!-- Patient name -->
+
+                    <StackPanel Grid.Row="0">
+
+                        <TextBlock
+                            Text="{Binding CurrentPatient.FullName,
+                                           TargetNullValue=No patient selected,
+                                           FallbackValue=No patient selected}"
+                            FontSize="26"
+                            FontWeight="Bold"/>
+
+                        <TextBlock
+                            Text="{Binding CurrentPatient.IcPassportNumber,
+                                           TargetNullValue=-,
+                                           FallbackValue=-}"
+                            Margin="0,5,0,0"
+                            Foreground="{DynamicResource TextSecondaryBrush}"
+                            FontSize="14"/>
+
+                    </StackPanel>
+
+                    <!-- Basic information -->
+
+                    <Grid Grid.Row="2">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="220"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="220"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="45"/>
+                            <RowDefinition Height="45"/>
+                            <RowDefinition Height="45"/>
+                            <RowDefinition Height="45"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Text="Medical Record Number"
+                            Style="{StaticResource FormLabelStyle}"/>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Text="{Binding CurrentPatient.MedicalRecordNumber,
+                                           TargetNullValue=-,
+                                           FallbackValue=-}"
+                            VerticalAlignment="Center"/>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            Text="IC / Passport"
+                            Style="{StaticResource FormLabelStyle}"/>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="3"
+                            Text="{Binding CurrentPatient.IcPassportNumber,
+                                           TargetNullValue=-,
+                                           FallbackValue=-}"
+                            VerticalAlignment="Center"/>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Text="Date of Birth"
+                            Style="{StaticResource FormLabelStyle}"/>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Text="{Binding CurrentPatient.DateOfBirth,
+                                           StringFormat={}{0:dd/MM/yyyy}}"
+                            VerticalAlignment="Center"/>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            Text="Age"
+                            Style="{StaticResource FormLabelStyle}"/>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="3"
+                            Text="{Binding CurrentPatient.AgeDisplay}"
+                            VerticalAlignment="Center"/>
+
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Text="Gender"
+                            Style="{StaticResource FormLabelStyle}"/>
+
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Text="{Binding CurrentPatient.Gender}"
+                            VerticalAlignment="Center"/>
+
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            Text="Phone"
+                            Style="{StaticResource FormLabelStyle}"/>
+
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="3"
+                            Text="{Binding CurrentPatient.PhoneNumber}"
+                            VerticalAlignment="Center"/>
+
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            Text="Parent / Guardian"
+                            Style="{StaticResource FormLabelStyle}"/>
+
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Text="{Binding CurrentPatient.ParentGuardian}"
+                            VerticalAlignment="Center"/>
+
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="2"
+                            Text="Referred By"
+                            Style="{StaticResource FormLabelStyle}"/>
+
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="3"
+                            Text="{Binding CurrentPatient.ReferredBy}"
+                            VerticalAlignment="Center"/>
+
+                    </Grid>
+
+                    <!-- Clinical information -->
+
+                    <StackPanel Grid.Row="4">
+
+                        <TextBlock
+                            Text="Clinical Information"
+                            FontSize="18"
+                            FontWeight="SemiBold"
+                            Margin="0,0,0,15"/>
+
+                        <TextBlock
+                            Text="Diagnosis"
+                            Style="{StaticResource FormLabelStyle}"/>
+
+                        <TextBlock
+                            Text="{Binding CurrentPatient.Diagnosis,
+                                           TargetNullValue=-,
+                                           FallbackValue=-}"
+                            TextWrapping="Wrap"
+                            Margin="0,0,0,15"/>
+
+                        <TextBlock
+                            Text="Notes"
+                            Style="{StaticResource FormLabelStyle}"/>
+
+                        <TextBlock
+                            Text="{Binding CurrentPatient.Notes,
+                                           TargetNullValue=-,
+                                           FallbackValue=-}"
+                            TextWrapping="Wrap"/>
+
+                    </StackPanel>
+
+                </Grid>
+
+            </ScrollViewer>
+
+        </Border>
+
+    </Grid>
+
+</UserControl>
