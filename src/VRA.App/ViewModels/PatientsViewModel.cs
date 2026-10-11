@@ -4,10 +4,12 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
 using VRA.App.Infrastructure.Dialogs;
+using VRA.App.Infrastructure.Navigation;
 //using VRA.App.Infrastructure.Patients;
 using VRA.App.Infrastructure;
 using VRA.Core.Interfaces;
 using VRA.Core.Models;
+using VRA.App.Views.Pages;
 
 namespace VRA.App.ViewModels;
 
@@ -16,6 +18,7 @@ public partial class PatientsViewModel : ObservableObject
     private readonly IPatientService _patientService;
     private readonly IDialogService _dialogService;
     private readonly CurrentPatientService _currentPatientService;
+    private readonly NavigationService _navigation;
 
     public ObservableCollection<Patient> Patients { get; }
         = new();
@@ -31,11 +34,13 @@ public partial class PatientsViewModel : ObservableObject
     public PatientsViewModel(
         IPatientService patientService,
         IDialogService dialogService,
-        CurrentPatientService currentPatientService)
+        CurrentPatientService currentPatientService,
+        NavigationService navigation)
     {
         _patientService = patientService;
         _dialogService = dialogService;
         _currentPatientService = currentPatientService;
+        _navigation = navigation;
 
         PatientsView = CollectionViewSource.GetDefaultView(Patients);
         PatientsView.Filter = FilterPatient;
@@ -105,6 +110,22 @@ public partial class PatientsViewModel : ObservableObject
         }
     }
 
+    [RelayCommand(CanExecute = nameof(CanViewDetails))]
+    private void ViewDetails()
+    {
+        if (SelectedPatient is null)
+            return;
+
+        _currentPatientService.SetPatient(SelectedPatient);
+
+        _navigation.Navigate<PatientDetailsView>();
+    }
+
+    private bool CanViewDetails()
+    {
+        return SelectedPatient is not null;
+    }
+
     private bool CanEditPatient()
     {
         return SelectedPatient is not null;
@@ -113,6 +134,7 @@ public partial class PatientsViewModel : ObservableObject
     partial void OnSelectedPatientChanged(Patient? value)
     {
         EditPatientCommand.NotifyCanExecuteChanged();
+        ViewDetailsCommand.NotifyCanExecuteChanged();
 
         if (value is not null)
         {
