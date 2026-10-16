@@ -26,4 +26,10 @@ public partial class SidebarViewModel : ObservableObject
     {
         _navigation.Navigate<PatientsView>();
     }
+
+    [RelayCommand]
+    private void HearingTest()
+    {
+        _navigation.Navigate<HearingTestView>();
+    }
 }

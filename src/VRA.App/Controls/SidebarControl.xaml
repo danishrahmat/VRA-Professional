@@ -29,7 +29,8 @@
 
             <controls:NavigationButton
          Title="Hearing Test"
-         Icon="🎧"/>
+         Icon="🎧"
+         Command="{Binding HearingTestCommand}"/>
 
             <controls:NavigationButton
          Title="Reinforcement"

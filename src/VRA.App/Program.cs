@@ -46,6 +46,7 @@ public static class Program
                 services.AddTransient<PatientsView>();
                 services.AddTransient<PatientDetailsView>();
                 services.AddTransient<SidebarControl>();
+                services.AddTransient<HearingTestView>();
 
                 // Windows
                 services.AddSingleton<MainWindow>();

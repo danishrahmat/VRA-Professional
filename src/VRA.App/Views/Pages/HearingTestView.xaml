@@ -1,0 +1,110 @@
+﻿<UserControl x:Class="VRA.App.Views.Pages.HearingTestView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="30">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Page Header -->
+            <StackPanel Grid.Row="0">
+                <TextBlock
+                    Text="Hearing Test"
+                    FontSize="28"
+                    FontWeight="Bold"/>
+
+                <TextBlock
+                    Text="Manage hearing assessment sessions"
+                    Margin="0,4,0,0"
+                    Foreground="{DynamicResource TextSecondaryBrush}"
+                    FontSize="14"/>
+            </StackPanel>
+
+            <!-- Current Patient -->
+            <Border
+                Grid.Row="2"
+                Background="{DynamicResource SurfaceBrush}"
+                BorderBrush="#454545"
+                BorderThickness="1"
+                CornerRadius="10"
+                Padding="24">
+
+                <StackPanel>
+                    <TextBlock
+                        Text="CURRENT PATIENT"
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextSecondaryBrush}"/>
+
+                    <TextBlock
+                        Text="{Binding CurrentPatient.FullName,
+                                       TargetNullValue=No patient selected,
+                                       FallbackValue=No patient selected}"
+                        FontSize="24"
+                        FontWeight="Bold"
+                        Margin="0,10,0,4"/>
+
+                    <TextBlock
+                        Text="{Binding CurrentPatient.IcPassportNumber,
+                                       TargetNullValue=-,
+                                       FallbackValue=-}"
+                        FontSize="14"
+                        Foreground="{DynamicResource TextSecondaryBrush}"/>
+
+                    <TextBlock
+                        Text="{Binding CurrentPatient.MedicalRecordNumber,
+                                       TargetNullValue=-,
+                                       FallbackValue=-}"
+                        FontSize="13"
+                        Margin="0,6,0,0"
+                        Foreground="{DynamicResource TextSecondaryBrush}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Test Session -->
+            <Border
+                Grid.Row="4"
+                Background="{DynamicResource SurfaceBrush}"
+                BorderBrush="#454545"
+                BorderThickness="1"
+                CornerRadius="10"
+                Padding="24"
+                VerticalAlignment="Top">
+
+                <StackPanel>
+                    <TextBlock
+                        Text="Test Session"
+                        FontSize="20"
+                        FontWeight="SemiBold"/>
+
+                    <TextBlock
+                        Text="Start a new hearing assessment for the selected patient."
+                        Margin="0,8,0,20"
+                        TextWrapping="Wrap"
+                        Foreground="{DynamicResource TextSecondaryBrush}"/>
+
+                    <Button
+                        Content="Start Hearing Test"
+                        Command="{Binding StartTestCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        HorizontalAlignment="Left"
+                        MinWidth="180"/>
+
+                    <TextBlock
+                        Text="{Binding StatusMessage}"
+                        Margin="0,16,0,0"
+                        TextWrapping="Wrap"
+                        Foreground="{DynamicResource TextSecondaryBrush}"/>
+                </StackPanel>
+            </Border>
+
+        </Grid>
+    </ScrollViewer>
+</UserControl>
