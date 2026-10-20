@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using VRA.App.Infrastructure;
 using VRA.Core.Models;
+using VRA.App.Services;
 using VRA.Common.Enums;
 
 
@@ -12,24 +13,24 @@ public partial class ReinforcementViewModel : ObservableObject
 {
     private readonly CurrentPatientService _currentPatientService;
     private readonly CurrentHearingTestSessionService _currentSessionService;
+    private readonly IReinforcementService _reinforcementService;
 
     public ReinforcementViewModel(
     CurrentPatientService currentPatientService,
-    CurrentHearingTestSessionService currentSessionService)
+    CurrentHearingTestSessionService currentSessionService,
+    IReinforcementService reinforcementService)
     {
         _currentPatientService = currentPatientService;
         _currentSessionService = currentSessionService;
+        _reinforcementService = reinforcementService;
 
         CurrentPatient = _currentPatientService.CurrentPatient;
         CurrentSession = _currentSessionService.CurrentSession;
 
         UpdateHearingSessionStatus();
 
-        _currentPatientService.CurrentPatientChanged +=
-            HandleCurrentPatientChanged;
-
-        _currentSessionService.SessionChanged +=
-            HandleSessionChanged;
+        _currentPatientService.CurrentPatientChanged += HandleCurrentPatientChanged;
+        _currentSessionService.SessionChanged += HandleSessionChanged;
     }
 
     [ObservableProperty]
@@ -69,8 +70,9 @@ public partial class ReinforcementViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanRunReinforcement))]
     private void ShowAnimation()
     {
-        if (!CanRunReinforcement())
-            return;
+        if (!CanRunReinforcement()) return;
+
+        _reinforcementService.ShowAnimation(SelectedDisplay);
 
         ActiveReinforcement = "Animation";
         ActiveTarget = SelectedDisplay;
@@ -81,8 +83,9 @@ public partial class ReinforcementViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanRunReinforcement))]
     private void PlaySound()
     {
-        if (!CanRunReinforcement())
-            return;
+        if (!CanRunReinforcement()) return;
+
+        _reinforcementService.PlaySound(SelectedDisplay);
 
         ActiveReinforcement = "Sound";
         ActiveTarget = SelectedDisplay;
@@ -94,6 +97,8 @@ public partial class ReinforcementViewModel : ObservableObject
     [RelayCommand]
     private void StopAll()
     {
+        _reinforcementService.StopAll();
+
         ActiveReinforcement = "None";
         ActiveTarget = "None";
         StatusMessage = "All reinforcement outputs stopped (UI test only)";

@@ -3,9 +3,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using VRA.App.Controls;
+using VRA.App.Infrastructure;
 using VRA.App.Infrastructure.Dialogs;
 using VRA.App.Infrastructure.Navigation;
-using VRA.App.Infrastructure;
+using VRA.App.Services;
 using VRA.App.ViewModels;
 using VRA.App.Views;
 using VRA.App.Views.Dialogs;
@@ -13,6 +14,7 @@ using VRA.App.Views.Pages;
 using VRA.Core.Data;
 using VRA.Core.Interfaces;
 using VRA.Core.Services;
+
 namespace VRA.App;
 
 public static class Program
@@ -33,7 +35,7 @@ public static class Program
                 services.AddSingleton<CurrentPatientService>();
                 services.AddScoped<IHearingTestSessionService, HearingTestSessionService>();
                 services.AddSingleton<CurrentHearingTestSessionService>();
-
+                services.AddSingleton<IReinforcementService, SimulatedReinforcementService>();
                 services.AddSingleton<IDialogService, DialogService>();
                 // ViewModels
                 services.AddTransient<DashboardViewModel>();
