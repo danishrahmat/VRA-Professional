@@ -176,9 +176,9 @@
                                     Grid.Row="2"
                                     Grid.Column="1"
                                     Text="{Binding CurrentSession.StartedAt,
-                                        StringFormat={}{0:dd MMM yyyy, HH:mm:ss},
-                                        TargetNullValue=-,
-                                        FallbackValue=-}"/>
+                   StringFormat='{}{0:dd MMM yyyy, HH:mm:ss}',
+                   TargetNullValue='—',
+                   FallbackValue='—'}"/>
                                 <!-- Completion Time -->
                                 <TextBlock
     Grid.Row="4"
@@ -189,10 +189,10 @@
                                 <TextBlock
     Grid.Row="4"
     Grid.Column="1"
-    Text="{Binding CurrentSession.CompletedAt,
-        StringFormat={}{0:dd MMM yyyy, HH:mm:ss},
-        TargetNullValue=-,
-        FallbackValue=-}"/>
+     Text="{Binding CurrentSession.CompletedAt,
+                   StringFormat='{}{0:dd MMM yyyy, HH:mm:ss}',
+                   TargetNullValue='—',
+                   FallbackValue='—'}"/>
                                 <!-- Status -->
                                 <TextBlock
     Grid.Row="6"

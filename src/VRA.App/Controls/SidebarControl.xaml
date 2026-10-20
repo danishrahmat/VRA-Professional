@@ -34,7 +34,9 @@
 
             <controls:NavigationButton
          Title="Reinforcement"
-         Icon="📺"/>
+         Icon="📺"
+         Command="{Binding ReinforcementCommand}" />
+
 
             <controls:NavigationButton
          Title="Reports"

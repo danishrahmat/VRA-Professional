@@ -32,6 +32,7 @@ public static class Program
                 services.AddSingleton<NavigationService>();
                 services.AddSingleton<CurrentPatientService>();
                 services.AddScoped<IHearingTestSessionService, HearingTestSessionService>();
+                services.AddSingleton<CurrentHearingTestSessionService>();
 
                 services.AddSingleton<IDialogService, DialogService>();
                 // ViewModels
@@ -42,6 +43,9 @@ public static class Program
                 services.AddSingleton<SidebarViewModel>();
                 services.AddTransient<NewPatientViewModel>();
                 services.AddTransient<HearingTestViewModel>();
+
+                services.AddTransient<ReinforcementViewModel>();
+                services.AddTransient<ReinforcementView>();
                 // Views
                 services.AddTransient<DashboardView>();
                 services.AddTransient<PatientsView>();

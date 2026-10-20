@@ -32,4 +32,10 @@ public partial class SidebarViewModel : ObservableObject
     {
         _navigation.Navigate<HearingTestView>();
     }
+
+    [RelayCommand]
+    private void Reinforcement()
+    {
+        _navigation.Navigate<ReinforcementView>();
+    }
 }

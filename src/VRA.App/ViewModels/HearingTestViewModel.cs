@@ -12,6 +12,8 @@ public partial class HearingTestViewModel : ObservableObject
 {
     private readonly CurrentPatientService _currentPatientService;
     private readonly IHearingTestSessionService _sessionService;
+    private readonly CurrentHearingTestSessionService _currentSessionService;
+
 
     [ObservableProperty]
     private Patient? currentPatient;
@@ -28,14 +30,43 @@ public partial class HearingTestViewModel : ObservableObject
     [ObservableProperty]
     private bool isStartingTest;
 
+
+
     public HearingTestViewModel(
         CurrentPatientService currentPatientService,
-        IHearingTestSessionService sessionService)
+        IHearingTestSessionService sessionService,
+        CurrentHearingTestSessionService currentSessionService)
     {
         _currentPatientService = currentPatientService;
         _sessionService = sessionService;
+        _currentSessionService = currentSessionService;
+
 
         CurrentPatient = _currentPatientService.CurrentPatient;
+        CurrentSession = _currentSessionService.CurrentSession;
+
+        if (CurrentSession is not null)
+        {
+            SessionStatusText = CurrentSession.Status switch
+            {
+                HearingTestStatus.InProgress => "In Progress",
+                HearingTestStatus.Completed => "Completed",
+                HearingTestStatus.Cancelled => "Cancelled",
+                _ => "Not started"
+            };
+        }
+        _currentSessionService.SessionChanged += session =>
+        {
+            CurrentSession = session;
+
+            SessionStatusText = session?.Status switch
+            {
+                HearingTestStatus.InProgress => "In Progress",
+                HearingTestStatus.Completed => "Completed",
+                HearingTestStatus.Cancelled => "Cancelled",
+                _ => "Not started"
+            };
+        };
 
         _currentPatientService.CurrentPatientChanged += patient =>
         {
@@ -67,6 +98,7 @@ public partial class HearingTestViewModel : ObservableObject
             var session = await _sessionService.CreateAsync(CurrentPatient.Id);
 
             CurrentSession = session;
+            _currentSessionService.SetSession(session);
             SessionStatusText = "In Progress";
 
             StatusMessage =
@@ -156,7 +188,7 @@ public partial class HearingTestViewModel : ObservableObject
                 HearingTestStatus.Cancelled => "Cancelled",
                 _ => finalStatus.ToString()
             };
-
+            _currentSessionService.RefreshSession(CurrentSession);
             StatusMessage = finalStatus == HearingTestStatus.Completed
                 ? "Hearing test completed successfully."
                 : "Hearing test cancelled.";
@@ -194,4 +226,6 @@ public partial class HearingTestViewModel : ObservableObject
         CompleteTestCommand.NotifyCanExecuteChanged();
         CancelTestCommand.NotifyCanExecuteChanged();
     }
+
+
 }
