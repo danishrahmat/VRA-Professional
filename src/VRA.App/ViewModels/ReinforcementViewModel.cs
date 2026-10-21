@@ -67,41 +67,77 @@ public partial class ReinforcementViewModel : ObservableObject
     }
 
 
+
     [RelayCommand(CanExecute = nameof(CanRunReinforcement))]
     private void ShowAnimation()
     {
         if (!CanRunReinforcement()) return;
 
-        _reinforcementService.ShowAnimation(SelectedDisplay);
+        try
+        {
+            _reinforcementService.ShowAnimation(SelectedDisplay);
 
-        ActiveReinforcement = "Animation";
-        ActiveTarget = SelectedDisplay;
-        StatusMessage =
-            $"Animation requested on {SelectedDisplay} display (UI test only)";
+            ActiveReinforcement = "Animation";
+            ActiveTarget = SelectedDisplay;
+            StatusMessage =
+                $"Animation requested on {SelectedDisplay} display (UI test only)";
+        }
+        catch (ArgumentException ex)
+        {
+            StatusMessage = $"Animation request failed: {ex.Message}";
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex);
+            StatusMessage = "Animation request failed. Check Debug Output.";
+        }
     }
+
+
 
     [RelayCommand(CanExecute = nameof(CanRunReinforcement))]
     private void PlaySound()
     {
         if (!CanRunReinforcement()) return;
 
-        _reinforcementService.PlaySound(SelectedDisplay);
+        try
+        {
+            _reinforcementService.PlaySound(SelectedDisplay);
 
-        ActiveReinforcement = "Sound";
-        ActiveTarget = SelectedDisplay;
-        StatusMessage =
-            $"Sound requested for {SelectedDisplay} display (UI test only)";
+            ActiveReinforcement = "Sound";
+            ActiveTarget = SelectedDisplay;
+            StatusMessage =
+                $"Sound requested for {SelectedDisplay} display (UI test only)";
+        }
+        catch (ArgumentException ex)
+        {
+            StatusMessage = $"Sound request failed: {ex.Message}";
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex);
+            StatusMessage = "Sound request failed. Check Debug Output.";
+        }
     }
+
 
 
     [RelayCommand]
     private void StopAll()
     {
-        _reinforcementService.StopAll();
+        try
+        {
+            _reinforcementService.StopAll();
 
-        ActiveReinforcement = "None";
-        ActiveTarget = "None";
-        StatusMessage = "All reinforcement outputs stopped (UI test only)";
+            ActiveReinforcement = "None";
+            ActiveTarget = "None";
+            StatusMessage = "All reinforcement outputs stopped (UI test only)";
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex);
+            StatusMessage = "Stop request failed. Check Debug Output.";
+        }
     }
 
     private void HandleCurrentPatientChanged(Patient? patient)
