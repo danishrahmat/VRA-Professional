@@ -1,6 +1,7 @@
 ﻿
 namespace VRA.App.Configuration;
 
+
 public static class ReinforcementConfigurationValidator
 {
     private static readonly string[] RequiredDisplays =
@@ -12,7 +13,7 @@ public static class ReinforcementConfigurationValidator
 
         if (configuration.Displays is null)
         {
-            throw new InvalidOperationException(
+            throw new ReinforcementConfigurationException(
                 "The Displays list is required.");
         }
 
@@ -22,14 +23,14 @@ public static class ReinforcementConfigurationValidator
 
         if (names.Any(string.IsNullOrWhiteSpace))
         {
-            throw new InvalidOperationException(
+            throw new ReinforcementConfigurationException(
                 "Every display must have a name.");
         }
 
         if (names.Distinct(StringComparer.OrdinalIgnoreCase).Count()
             != names.Count)
         {
-            throw new InvalidOperationException(
+            throw new ReinforcementConfigurationException(
                 "Display names must be unique.");
         }
 
@@ -39,35 +40,35 @@ public static class ReinforcementConfigurationValidator
                     requiredName,
                     StringComparer.OrdinalIgnoreCase))
             {
-                throw new InvalidOperationException(
+                throw new ReinforcementConfigurationException(
                     $"Required logical display '{requiredName}' is missing.");
             }
         }
 
         if (configuration.Audio is null)
         {
-            throw new InvalidOperationException(
+            throw new ReinforcementConfigurationException(
                 "The Audio configuration is required.");
         }
 
         if (configuration.Audio.ChannelCount < 1)
         {
-            throw new InvalidOperationException(
-                "Audio ChannelCount must be greater than zero.");
+            throw new ReinforcementConfigurationException(
+                 "Audio ChannelCount must be greater than zero.");
         }
 
         if (configuration.Displays.Any(display =>
                 display.MonitorNumber is not null &&
                 display.MonitorNumber < 1))
         {
-            throw new InvalidOperationException(
+            throw new ReinforcementConfigurationException(
                 "MonitorNumber must be positive when specified.");
         }
 
         if (configuration.Audio.DeviceNumber is not null &&
             configuration.Audio.DeviceNumber < 0)
         {
-            throw new InvalidOperationException(
+            throw new ReinforcementConfigurationException(
                 "Audio DeviceNumber cannot be negative when specified.");
         }
     }

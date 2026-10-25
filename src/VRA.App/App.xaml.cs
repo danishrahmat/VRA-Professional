@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Windows;
+using VRA.App.Configuration;
 using VRA.Core.Data;
 
 namespace VRA.App;
@@ -9,8 +11,6 @@ public partial class App : Application
 {
     private readonly IHost _host;
 
-
-
     public App()
     {
         _host = Program.CreateHostBuilder().Build();
@@ -18,26 +18,55 @@ public partial class App : Application
 
     protected override async void OnStartup(StartupEventArgs e)
     {
-        await _host.StartAsync();
+        try
+        {
+            await _host.StartAsync();
 
-        // Create database if it doesn't exist
-        await DatabaseInitializer.InitializeAsync(_host.Services);
+            // Resolve configuration early so validation runs before database initialization.
+            _host.Services.GetRequiredService<ReinforcementConfiguration>();
 
-        var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+            // Create database if it doesn't exist.
+            await DatabaseInitializer.InitializeAsync(_host.Services);
 
-        mainWindow.Show();
+            var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+            mainWindow.Show();
 
-        base.OnStartup(e);
+            base.OnStartup(e);
+        }
+        catch (ReinforcementConfigurationException ex)
+        {
+            MessageBox.Show(
+                $"VRA Professional cannot start because its reinforcement settings are invalid.\n\n{ex.Message}\n\nPlease check appsettings.json.",
+                "Configuration Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+
+            Shutdown(-1);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex);
+
+            MessageBox.Show(
+                "VRA Professional could not start. Please check the application logs or contact technical support.",
+                "Startup Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+
+            Shutdown(-1);
+        }
     }
 
     protected override async void OnExit(ExitEventArgs e)
     {
-        await _host.StopAsync();
-
-        _host.Dispose();
-
-        base.OnExit(e);
+        try
+        {
+            await _host.StopAsync();
+        }
+        finally
+        {
+            _host.Dispose();
+            base.OnExit(e);
+        }
     }
-
-
 }
