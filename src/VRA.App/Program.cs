@@ -61,7 +61,14 @@ public static class Program
                 services.AddTransient<NewPatientWindow>();
 
                 //configuration
-                services.AddSingleton<ReinforcementConfiguration>(DefaultReinforcementConfiguration.Create());
+                services.Configure<ReinforcementConfiguration>(
+                    context.Configuration.GetSection("Reinforcement"));
+
+                services.AddSingleton(sp =>
+                    sp.GetRequiredService<
+                        Microsoft.Extensions.Options.IOptions<ReinforcementConfiguration>>()
+                      .Value);
+
             });
     }
 
