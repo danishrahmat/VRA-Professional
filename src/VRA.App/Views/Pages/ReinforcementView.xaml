@@ -58,6 +58,13 @@
                    FontSize="15"
                    Margin="0,0,0,6"/>
 
+
+                    <TextBlock Text="{Binding OutputState,
+                          StringFormat='Output state: {0}'}"
+                    FontSize="15"
+                    Margin="0,0,0,6"/>
+
+
                     <TextBlock Text="{Binding HearingSessionStatus,
                           StringFormat='Hearing test session: {0}'}"
            FontSize="15"

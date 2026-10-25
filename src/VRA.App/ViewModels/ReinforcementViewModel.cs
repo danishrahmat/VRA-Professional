@@ -5,7 +5,7 @@ using VRA.App.Infrastructure;
 using VRA.Core.Models;
 using VRA.App.Services;
 using VRA.Common.Enums;
-
+using VRA.App.Models;
 
 namespace VRA.App.ViewModels;
 
@@ -54,7 +54,10 @@ public partial class ReinforcementViewModel : ObservableObject
     [ObservableProperty]
     private string hearingSessionStatus = "No active hearing test";
 
-    
+    [ObservableProperty]
+    private ReinforcementState outputState = ReinforcementState.Idle;
+
+
 
     [RelayCommand]
     private void SelectDisplay(string display)
@@ -68,6 +71,7 @@ public partial class ReinforcementViewModel : ObservableObject
 
 
 
+
     [RelayCommand(CanExecute = nameof(CanRunReinforcement))]
     private void ShowAnimation()
     {
@@ -77,6 +81,7 @@ public partial class ReinforcementViewModel : ObservableObject
         {
             _reinforcementService.ShowAnimation(SelectedDisplay);
 
+            OutputState = ReinforcementState.AnimationRequested;
             ActiveReinforcement = "Animation";
             ActiveTarget = SelectedDisplay;
             StatusMessage =
@@ -84,14 +89,23 @@ public partial class ReinforcementViewModel : ObservableObject
         }
         catch (ArgumentException ex)
         {
+            OutputState = ReinforcementState.Error;
+            ActiveReinforcement = "None";
+            ActiveTarget = "None";
             StatusMessage = $"Animation request failed: {ex.Message}";
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine(ex);
+
+            OutputState = ReinforcementState.Error;
+            ActiveReinforcement = "None";
+            ActiveTarget = "None";
             StatusMessage = "Animation request failed. Check Debug Output.";
         }
     }
+
+
 
 
 
@@ -104,6 +118,7 @@ public partial class ReinforcementViewModel : ObservableObject
         {
             _reinforcementService.PlaySound(SelectedDisplay);
 
+            OutputState = ReinforcementState.SoundRequested;
             ActiveReinforcement = "Sound";
             ActiveTarget = SelectedDisplay;
             StatusMessage =
@@ -111,14 +126,23 @@ public partial class ReinforcementViewModel : ObservableObject
         }
         catch (ArgumentException ex)
         {
+            OutputState = ReinforcementState.Error;
+            ActiveReinforcement = "None";
+            ActiveTarget = "None";
             StatusMessage = $"Sound request failed: {ex.Message}";
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine(ex);
+
+            OutputState = ReinforcementState.Error;
+            ActiveReinforcement = "None";
+            ActiveTarget = "None";
             StatusMessage = "Sound request failed. Check Debug Output.";
         }
     }
+
+
 
 
 
@@ -129,6 +153,7 @@ public partial class ReinforcementViewModel : ObservableObject
         {
             _reinforcementService.StopAll();
 
+            OutputState = ReinforcementState.Idle;
             ActiveReinforcement = "None";
             ActiveTarget = "None";
             StatusMessage = "All reinforcement outputs stopped (UI test only)";
@@ -136,9 +161,14 @@ public partial class ReinforcementViewModel : ObservableObject
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine(ex);
+
+            OutputState = ReinforcementState.Error;
+            ActiveReinforcement = "None";
+            ActiveTarget = "None";
             StatusMessage = "Stop request failed. Check Debug Output.";
         }
     }
+
 
     private void HandleCurrentPatientChanged(Patient? patient)
     {
