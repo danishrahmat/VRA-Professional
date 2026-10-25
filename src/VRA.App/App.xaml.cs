@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using System.Windows;
 using VRA.App.Configuration;
 using VRA.Core.Data;
+using VRA.App.VideoLibrary;
 
 namespace VRA.App;
 
@@ -24,6 +25,8 @@ public partial class App : Application
 
             // Resolve configuration early so validation runs before database initialization.
             _host.Services.GetRequiredService<ReinforcementConfiguration>();
+            // Create the three shared reinforcement video folders.
+            _host.Services.GetRequiredService<ReinforcementVideoLibraryService>();
 
             // Create database if it doesn't exist.
             await DatabaseInitializer.InitializeAsync(_host.Services);

@@ -1,14 +1,18 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using VRA.App.Configuration;
+using VRA.App.Display;
 using VRA.App.Infrastructure;
 using VRA.App.Models;
 using VRA.App.Services;
 using VRA.App.ViewModels;
 using VRA.Common.Enums;
 using VRA.Core.Models;
-using VRA.App.Configuration;
-
+using System.Collections.ObjectModel;
+using System.Linq;
+using VRA.App.VideoLibrary;
+using System.IO;
 
 namespace VRA.App.ViewModels;
 
@@ -18,17 +22,25 @@ public partial class ReinforcementViewModel : ObservableObject
     private readonly CurrentHearingTestSessionService _currentSessionService;
     private readonly IReinforcementService _reinforcementService;
     private readonly ReinforcementConfiguration _configuration;
+    private readonly DisplayDiscoveryService _displayDiscoveryService;
+    private readonly DisplayMappingSettingsService _displayMappingSettingsService;
+    private readonly ReinforcementVideoLibraryService _videoLibraryService;
+
 
     public ReinforcementViewModel(
         CurrentPatientService currentPatientService,
         CurrentHearingTestSessionService currentSessionService,
         IReinforcementService reinforcementService,
-        ReinforcementConfiguration configuration)
+        ReinforcementConfiguration configuration,
+        DisplayDiscoveryService displayDiscoveryService,
+        DisplayMappingSettingsService displayMappingSettingsService,
+        ReinforcementVideoLibraryService videoLibraryService)
     {
         _currentPatientService = currentPatientService;
         _currentSessionService = currentSessionService;
         _reinforcementService = reinforcementService;
         _configuration = configuration;
+        _displayDiscoveryService = displayDiscoveryService;
 
         CurrentPatient = _currentPatientService.CurrentPatient;
         CurrentSession = _currentSessionService.CurrentSession;
@@ -37,7 +49,13 @@ public partial class ReinforcementViewModel : ObservableObject
 
         _currentPatientService.CurrentPatientChanged += HandleCurrentPatientChanged;
         _currentSessionService.SessionChanged += HandleSessionChanged;
+        _displayMappingSettingsService = displayMappingSettingsService;
+        _videoLibraryService = videoLibraryService;
+
+        RefreshDisplays();
+        RefreshVideoFolders();
     }
+
 
     [ObservableProperty]
     private Patient? currentPatient;
@@ -62,6 +80,30 @@ public partial class ReinforcementViewModel : ObservableObject
 
     [ObservableProperty]
     private ReinforcementState outputState = ReinforcementState.Idle;
+
+    [ObservableProperty]
+    private ObservableCollection<DisplayInfo> detectedDisplays = [];
+
+    [ObservableProperty]
+    private DisplayMapping? leftDisplayMapping;
+
+    [ObservableProperty]
+    private DisplayMapping? centreDisplayMapping;
+
+    [ObservableProperty]
+    private DisplayMapping? rightDisplayMapping;
+
+    [ObservableProperty]
+    private ObservableCollection<ReinforcementVideoFolder> videoFolders = [];
+
+    [ObservableProperty]
+    private ReinforcementVideoFolder? selectedVideoFolder;
+
+    [ObservableProperty]
+    private ObservableCollection<ReinforcementVideo> availableVideos = [];
+
+    [ObservableProperty]
+    private ReinforcementVideo? selectedVideo;
 
 
 
@@ -102,13 +144,22 @@ public partial class ReinforcementViewModel : ObservableObject
 
         try
         {
-            _reinforcementService.ShowAnimation(SelectedDisplay);
+            if (SelectedVideoFolder is null)
+            {
+                StatusMessage = "Please select a video folder first.";
+                return;
+            }
+
+            _reinforcementService.PlayRandomVideo(
+                SelectedDisplay,
+                SelectedVideoFolder.Id);
 
             OutputState = ReinforcementState.AnimationRequested;
             ActiveReinforcement = "Animation";
             ActiveTarget = SelectedDisplay;
             StatusMessage =
-                $"Animation requested on {SelectedDisplay} display (UI test only)";
+                $"Playing random video from {SelectedVideoFolder.Name} " +
+    $"on {SelectedDisplay} display.";
         }
         catch (ArgumentException ex)
         {
@@ -193,6 +244,73 @@ public partial class ReinforcementViewModel : ObservableObject
     }
 
 
+
+
+
+    [RelayCommand]
+    private void RefreshDisplays()
+    {
+        var displays = _displayDiscoveryService.GetDisplays();
+
+        DetectedDisplays = new ObservableCollection<DisplayInfo>(displays);
+
+        // Load saved assignments.
+        var savedSettings = _displayMappingSettingsService.Load();
+
+        // Restore saved assignments when available.
+        LeftDisplayMapping ??= new DisplayMapping
+        {
+            TargetName = "Left",
+            DeviceName = savedSettings.LeftDeviceName
+        };
+
+        CentreDisplayMapping ??= new DisplayMapping
+        {
+            TargetName = "Centre",
+            DeviceName = savedSettings.CentreDeviceName
+        };
+
+        RightDisplayMapping ??= new DisplayMapping
+        {
+            TargetName = "Right",
+            DeviceName = savedSettings.RightDeviceName
+        };
+
+        // Apply defaults only when no saved assignment exists.
+        LeftDisplayMapping.DeviceName ??=
+            displays.ElementAtOrDefault(0)?.DeviceName;
+
+        CentreDisplayMapping.DeviceName ??=
+            displays.ElementAtOrDefault(1)?.DeviceName;
+
+        RightDisplayMapping.DeviceName ??=
+            displays.ElementAtOrDefault(2)?.DeviceName;
+
+        StatusMessage = $"Detected {DetectedDisplays.Count} active display(s).";
+    }
+
+
+
+    [RelayCommand]
+    private void AssignLeftDisplay(string? deviceName)
+    {
+        TryAssignDisplay("Left", deviceName);
+    }
+
+    [RelayCommand]
+    private void AssignCentreDisplay(string? deviceName)
+    {
+        TryAssignDisplay("Centre", deviceName);
+    }
+
+    [RelayCommand]
+    private void AssignRightDisplay(string? deviceName)
+    {
+        TryAssignDisplay("Right", deviceName);
+    }
+
+
+
     private void HandleCurrentPatientChanged(Patient? patient)
     {
         CurrentPatient = patient;
@@ -240,5 +358,126 @@ public partial class ReinforcementViewModel : ObservableObject
             && CurrentSession?.Status == HearingTestStatus.InProgress;
     }
 
+
+    public bool IsDisplayAlreadyAssigned(
+        string? deviceName,
+        string targetName)
+    {
+        if (string.IsNullOrWhiteSpace(deviceName))
+            return false;
+
+        var mappings = new[]
+        {
+        LeftDisplayMapping,
+        CentreDisplayMapping,
+        RightDisplayMapping
+    };
+
+        return mappings.Any(mapping =>
+            mapping is not null
+            && !string.Equals(
+                mapping.TargetName,
+                targetName,
+                StringComparison.OrdinalIgnoreCase)
+            && string.Equals(
+                mapping.DeviceName,
+                deviceName,
+                StringComparison.OrdinalIgnoreCase));
+    }
+
+
+
+    public bool TryAssignDisplay(
+        string targetName,
+        string? deviceName)
+    {
+        if (IsDisplayAlreadyAssigned(deviceName, targetName))
+        {
+            StatusMessage =
+                $"This display is already assigned to another target. " +
+                $"Choose a different display for {targetName}.";
+
+            return false;
+        }
+
+        var mapping = targetName switch
+        {
+            "Left" => LeftDisplayMapping,
+            "Centre" => CentreDisplayMapping,
+            "Right" => RightDisplayMapping,
+            _ => null
+        };
+
+        if (mapping is null)
+            return false;
+
+        mapping.DeviceName = deviceName;
+
+        SaveDisplayMappings();
+
+        StatusMessage = $"{targetName} display mapping updated.";
+
+        return true;
+    }
+
+
+
+    private void SaveDisplayMappings()
+    {
+        var settings = new DisplayMappingSettings
+        {
+            LeftDeviceName = LeftDisplayMapping?.DeviceName,
+            CentreDeviceName = CentreDisplayMapping?.DeviceName,
+            RightDeviceName = RightDisplayMapping?.DeviceName
+        };
+
+        try
+        {
+            _displayMappingSettingsService.Save(settings);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex);
+
+            StatusMessage =
+                "Display mapping changed, but saving failed. Check Debug Output.";
+        }
+    }
+
+    [RelayCommand]
+    private void RefreshVideoFolders()
+    {
+        VideoFolders = new ObservableCollection<ReinforcementVideoFolder>(
+            _videoLibraryService.GetFolders());
+
+        SelectedVideoFolder ??= VideoFolders.FirstOrDefault();
+
+        RefreshVideos();
+    }
+
+    [RelayCommand]
+    private void RefreshVideos()
+    {
+        if (SelectedVideoFolder is null)
+        {
+            AvailableVideos = [];
+            SelectedVideo = null;
+            return;
+        }
+
+        AvailableVideos = new ObservableCollection<ReinforcementVideo>(
+            _videoLibraryService.GetVideos(SelectedVideoFolder.Id));
+
+        SelectedVideo = AvailableVideos.FirstOrDefault();
+
+        StatusMessage =
+            $"Found {AvailableVideos.Count} video(s) in {SelectedVideoFolder.Name}.";
+    }
+
+    partial void OnSelectedVideoFolderChanged(
+        ReinforcementVideoFolder? value)
+    {
+        RefreshVideos();
+    }
 
 }

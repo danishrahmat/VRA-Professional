@@ -1,0 +1,33 @@
+﻿<Window x:Class="VRA.App.Views.ReinforcementWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="VRA Reinforcement"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowState="Normal"
+        Background="#101820"
+        ShowInTaskbar="False"
+        Topmost="True">
+
+    <Grid Background="#101820">
+
+        <MediaElement x:Name="ReinforcementPlayer"
+                      LoadedBehavior="Manual"
+                      UnloadedBehavior="Manual"
+                      Stretch="Uniform"
+                      Volume="0"
+                      MediaEnded="ReinforcementPlayer_MediaEnded"
+                      MediaFailed="ReinforcementPlayer_MediaFailed"/>
+
+        <TextBlock x:Name="TargetLabel"
+                   Text="VRA REINFORCEMENT"
+                   Foreground="White"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Bottom"
+                   Margin="12"
+                   Opacity="0.85"
+                   IsHitTestVisible="False"/>
+    </Grid>
+</Window>

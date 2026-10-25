@@ -107,6 +107,8 @@
                     </Button.Style>
                 </Button>
 
+
+
                 <Button Content="CENTRE"
             Command="{Binding SelectDisplayCommand}"
             CommandParameter="Centre"
@@ -149,13 +151,419 @@
                     </Button.Style>
                 </Button>
 
+
             </UniformGrid>
+
+
+
+            <StackPanel Margin="10">
+                <StackPanel.Resources>
+
+                    <Style x:Key="VraDisplayComboBox" TargetType="{x:Type ComboBox}">
+                        <Setter Property="Background" Value="#3A3A3A"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="BorderBrush" Value="#555555"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="Padding" Value="10"/>
+                        <Setter Property="MinHeight" Value="38"/>
+                        <Setter Property="SnapsToDevicePixels" Value="True"/>
+                        <Setter Property="ItemContainerStyle">
+                            <Setter.Value>
+                                <Style TargetType="{x:Type ComboBoxItem}">
+                                    <Setter Property="Background" Value="#3A3A3A"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Padding" Value="8"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                                                <Border x:Name="ItemBorder"
+                                    Background="{TemplateBinding Background}"
+                                    Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter
+                                    TextElement.Foreground="{TemplateBinding Foreground}"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsHighlighted" Value="True">
+                                                        <Setter TargetName="ItemBorder"
+                                            Property="Background"
+                                            Value="#2488ED"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ComboBox}">
+                                    <Grid>
+                                        <Border x:Name="ComboBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="2">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition Width="32"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <ContentPresenter
+                                Grid.Column="0"
+                                Margin="{TemplateBinding Padding}"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Left"
+                                Content="{TemplateBinding SelectionBoxItem}"
+                                ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                TextElement.Foreground="{TemplateBinding Foreground}"
+                                IsHitTestVisible="False"/>
+
+                                                <ToggleButton
+                                Grid.Column="1"
+                                Focusable="False"
+                                IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                ClickMode="Press"
+                                Background="#3A3A3A"
+                                BorderThickness="0"
+                                Foreground="White">
+                                                    <TextBlock Text="▼"
+                                           FontSize="10"
+                                           Foreground="White"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                                                </ToggleButton>
+                                            </Grid>
+                                        </Border>
+
+                                        <Popup
+                        Name="PART_Popup"
+                        Placement="Bottom"
+                        IsOpen="{TemplateBinding IsDropDownOpen}"
+                        AllowsTransparency="True"
+                        Focusable="False"
+                        PopupAnimation="Fade">
+                                            <Border
+                            Background="#3A3A3A"
+                            BorderBrush="#555555"
+                            BorderThickness="1"
+                            MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
+                            MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                                <ScrollViewer CanContentScroll="True">
+                                                    <ItemsPresenter/>
+                                                </ScrollViewer>
+                                            </Border>
+                                        </Popup>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+
+                </StackPanel.Resources>
+
+                <TextBlock
+        Text="VRA Display Mapping"
+        FontSize="19"
+        FontWeight="SemiBold"
+        Foreground="White"
+        Margin="0,0,0,12" />
+
+
+
+                <TextBlock Text="Left target" Foreground="White" Margin="0,0,0,4"/>
+                <ComboBox
+        Style="{StaticResource VraDisplayComboBox}"
+        ItemsSource="{Binding DetectedDisplays}"
+        DisplayMemberPath="DisplayLabel"
+        SelectedValuePath="DeviceName"
+        SelectedValue="{Binding LeftDisplayMapping.DeviceName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+        Tag="Left"
+        SelectionChanged="ComboBox_SelectionChanged"
+        Margin="0,0,0,12"/>
+
+                <TextBlock Text="Centre target" Foreground="White" Margin="0,0,0,4"/>
+                <ComboBox
+        Style="{StaticResource VraDisplayComboBox}"
+        ItemsSource="{Binding DetectedDisplays}"
+        DisplayMemberPath="DisplayLabel"
+        SelectedValuePath="DeviceName"
+        SelectedValue="{Binding CentreDisplayMapping.DeviceName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+        Tag="Centre"
+        SelectionChanged="ComboBox_SelectionChanged"
+        Margin="0,0,0,12"/>
+
+                <TextBlock Text="Right target" Foreground="White" Margin="0,0,0,4"/>
+                <ComboBox
+        Style="{StaticResource VraDisplayComboBox}"
+        ItemsSource="{Binding DetectedDisplays}"
+        DisplayMemberPath="DisplayLabel"
+        SelectedValuePath="DeviceName"
+        SelectedValue="{Binding RightDisplayMapping.DeviceName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+        Tag="Right"
+        SelectionChanged="ComboBox_SelectionChanged"
+        Margin="0,0,0,12"/>
+            </StackPanel>
+
+
+
+            <StackPanel Margin="10">
+                <TextBlock
+        Text="Detected Windows Displays"
+        FontSize="16"
+        FontWeight="SemiBold"
+        Margin="0,0,0,8" />
+
+
+                <Button
+    Content="↻  Refresh Displays"
+    Command="{Binding RefreshDisplaysCommand}"
+    HorizontalAlignment="Left"
+    Padding="14,8"
+    Margin="0,0,0,10"
+    FontSize="13"
+    FontWeight="SemiBold"
+    Background="#3A3A3A"
+    Foreground="White"
+    BorderBrush="#555555"
+    BorderThickness="1"
+    Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="Background" Value="#3A3A3A"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="BorderBrush" Value="#555555"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="Padding" Value="14,8"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                        <Border
+                            x:Name="ButtonBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="4"
+                            Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                RecognizesAccessKey="True"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="#2488ED"/>
+                                                <Setter TargetName="ButtonBorder"
+                                        Property="BorderBrush"
+                                        Value="#2488ED"/>
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="#1976D2"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="#292929"/>
+                                                <Setter TargetName="ButtonBorder"
+                                        Property="BorderBrush"
+                                        Value="#454545"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+
+                <ItemsControl ItemsSource="{Binding DetectedDisplays}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                    BorderBrush="#555555"
+                    BorderThickness="1"
+                    CornerRadius="5"
+                    Padding="10"
+                    Margin="0,0,0,6">
+                                <StackPanel>
+                                    <TextBlock
+                            Text="{Binding DisplayName}"
+                            FontWeight="SemiBold" />
+
+                                    <TextBlock
+                            Margin="0,4,0,0">
+                            <Run Text="{Binding DeviceName}" />
+                            <Run Text=" | " />
+                            <Run Text="{Binding Width}" />
+                            <Run Text=" × " />
+                            <Run Text="{Binding Height}" />
+                                    </TextBlock>
+
+                                    <TextBlock
+                            Text="{Binding IsPrimary, StringFormat=Primary display: {0}}"
+                            Margin="0,4,0,0" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
 
 
             <TextBlock Text="{Binding SelectedDisplay,
                                        StringFormat='Selected display: {0}'}"
                        FontSize="15"
                        Margin="0,0,0,20"/>
+
+
+            <!-- Video Library -->
+            <Border Background="{DynamicResource CardBackgroundBrush}"
+        CornerRadius="10"
+        Padding="16"
+        Margin="0,0,0,20">
+
+
+                <Border.Resources>
+
+                    <Style x:Key="VideoLibraryComboBox"
+       TargetType="{x:Type ComboBox}">
+                        <Setter Property="Background" Value="#3A3A3A"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="BorderBrush" Value="#555555"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="Padding" Value="10"/>
+                        <Setter Property="MinHeight" Value="38"/>
+                        <Setter Property="MaxDropDownHeight" Value="180"/>
+                        <Setter Property="ItemContainerStyle">
+                            <Setter.Value>
+                                <Style TargetType="{x:Type ComboBoxItem}">
+                                    <Setter Property="Background" Value="#3A3A3A"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Padding" Value="8"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsHighlighted" Value="True">
+                                            <Setter Property="Background" Value="#2488ED"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#2488ED"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ComboBox}">
+                                    <Grid>
+                                        <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="3">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition Width="32"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <ContentPresenter
+                                Grid.Column="0"
+                                Margin="{TemplateBinding Padding}"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Left"
+                                Content="{TemplateBinding SelectionBoxItem}"
+                                ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                TextElement.Foreground="{TemplateBinding Foreground}"
+                                IsHitTestVisible="False"/>
+
+                                                <ToggleButton
+                                Grid.Column="1"
+                                Focusable="False"
+                                IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                ClickMode="Press"
+                                Background="#3A3A3A"
+                                BorderThickness="0"
+                                Foreground="White">
+                                                    <TextBlock Text="▼"
+                                           FontSize="10"
+                                           Foreground="White"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                                                </ToggleButton>
+                                            </Grid>
+                                        </Border>
+
+                                        <Popup Name="PART_Popup"
+                           Placement="Bottom"
+                           IsOpen="{TemplateBinding IsDropDownOpen}"
+                           AllowsTransparency="True"
+                           Focusable="False"
+                           PopupAnimation="Fade">
+                                            <Border Background="#292929"
+                                BorderBrush="#555555"
+                                BorderThickness="1"
+                                MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
+                                MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                                <ScrollViewer CanContentScroll="True">
+                                                    <ItemsPresenter/>
+                                                </ScrollViewer>
+                                            </Border>
+                                        </Popup>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+
+                </Border.Resources>
+
+
+                <StackPanel>
+                    <TextBlock Text="Video Library"
+                   FontSize="19"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,6"/>
+
+                    <TextBlock Text="Choose a shared video folder."
+                   Opacity="0.7"
+                   TextWrapping="Wrap"
+                   Margin="0,0,0,16"/>
+
+                    <TextBlock Text="Video Folder"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,6"/>
+
+
+                    <ComboBox Style="{StaticResource VideoLibraryComboBox}"
+          ItemsSource="{Binding VideoFolders}"
+          SelectedItem="{Binding SelectedVideoFolder, Mode=TwoWay}"
+          DisplayMemberPath="Name"
+          Margin="0,0,0,12"/>
+
+
+                    
+
+
+                    <Button Content="↻  Refresh Videos"
+                Command="{Binding RefreshVideosCommand}"
+                HorizontalAlignment="Left"
+                Padding="14,8"
+                Background="#3A3A3A"
+                Foreground="White"
+                BorderBrush="#555555"
+                Cursor="Hand"/>
+                </StackPanel>
+            </Border>
+
 
             <!-- Reinforcement controls -->
             <TextBlock Text="Reinforcement Controls"

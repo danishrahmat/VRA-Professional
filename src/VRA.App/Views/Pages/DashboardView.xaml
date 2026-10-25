@@ -72,7 +72,7 @@
                 <controls:InfoCard
     Icon="🖥"
     Title="Displays"
-    Value="0 / 3"
+    Value="{Binding DisplayCountText}"
     Description="Connected screens"/>
 
                 <controls:InfoCard

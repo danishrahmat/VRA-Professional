@@ -21,6 +21,15 @@ public class SimulatedReinforcementService : IReinforcementService
             $"[SIMULATION] Show animation on {display} display.");
     }
 
+    public void PlayRandomVideo(string display, string folderId)
+    {
+        ValidateDisplay(display);
+
+        System.Diagnostics.Debug.WriteLine(
+            $"[SIMULATION] Play random video from folder '{folderId}' " +
+            $"on {display} display.");
+    }
+
     public void PlaySound(string display)
     {
         ValidateDisplay(display);
