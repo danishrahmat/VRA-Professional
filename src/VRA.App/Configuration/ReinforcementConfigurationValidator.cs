@@ -51,11 +51,13 @@ public static class ReinforcementConfigurationValidator
                 "The Audio configuration is required.");
         }
 
-        if (configuration.Audio.ChannelCount < 1)
+
+        if (configuration.Audio.ChannelCount is < 1 or > 32)
         {
             throw new ReinforcementConfigurationException(
-                 "Audio ChannelCount must be greater than zero.");
+                "Audio ChannelCount must be between 1 and 32.");
         }
+
 
         if (configuration.Displays.Any(display =>
                 display.MonitorNumber is not null &&
