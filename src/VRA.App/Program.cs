@@ -61,13 +61,24 @@ public static class Program
                 services.AddTransient<NewPatientWindow>();
 
                 //configuration
-                services.Configure<ReinforcementConfiguration>(
-                    context.Configuration.GetSection("Reinforcement"));
 
                 services.AddSingleton(sp =>
-                    sp.GetRequiredService<
-                        Microsoft.Extensions.Options.IOptions<ReinforcementConfiguration>>()
-                      .Value);
+                {
+                    var configuration = context.Configuration
+                        .GetSection("Reinforcement")
+                        .Get<ReinforcementConfiguration>();
+
+                    if (configuration is null)
+                    {
+                        throw new InvalidOperationException(
+                            "The Reinforcement configuration section is missing.");
+                    }
+
+                    ReinforcementConfigurationValidator.Validate(configuration);
+
+                    return configuration;
+                });
+
 
             });
     }
