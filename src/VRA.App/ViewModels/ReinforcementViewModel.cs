@@ -2,10 +2,13 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using VRA.App.Infrastructure;
-using VRA.Core.Models;
-using VRA.App.Services;
-using VRA.Common.Enums;
 using VRA.App.Models;
+using VRA.App.Services;
+using VRA.App.ViewModels;
+using VRA.Common.Enums;
+using VRA.Core.Models;
+using VRA.App.Configuration;
+
 
 namespace VRA.App.ViewModels;
 
@@ -14,15 +17,18 @@ public partial class ReinforcementViewModel : ObservableObject
     private readonly CurrentPatientService _currentPatientService;
     private readonly CurrentHearingTestSessionService _currentSessionService;
     private readonly IReinforcementService _reinforcementService;
+    private readonly ReinforcementConfiguration _configuration;
 
     public ReinforcementViewModel(
-    CurrentPatientService currentPatientService,
-    CurrentHearingTestSessionService currentSessionService,
-    IReinforcementService reinforcementService)
+        CurrentPatientService currentPatientService,
+        CurrentHearingTestSessionService currentSessionService,
+        IReinforcementService reinforcementService,
+        ReinforcementConfiguration configuration)
     {
         _currentPatientService = currentPatientService;
         _currentSessionService = currentSessionService;
         _reinforcementService = reinforcementService;
+        _configuration = configuration;
 
         CurrentPatient = _currentPatientService.CurrentPatient;
         CurrentSession = _currentSessionService.CurrentSession;
@@ -59,15 +65,32 @@ public partial class ReinforcementViewModel : ObservableObject
 
 
 
+
     [RelayCommand]
     private void SelectDisplay(string display)
     {
-        if (display is not ("Left" or "Centre" or "Right"))
-            return;
+        bool isConfigured = _configuration.Displays.Any(
+            item => string.Equals(
+                item.Name,
+                display,
+                StringComparison.OrdinalIgnoreCase));
 
-        SelectedDisplay = display;
-        StatusMessage = $"{display} display selected";
+        if (!isConfigured)
+        {
+            StatusMessage = $"Display '{display}' is not configured.";
+            return;
+        }
+
+        SelectedDisplay = _configuration.Displays
+            .First(item => string.Equals(
+                item.Name,
+                display,
+                StringComparison.OrdinalIgnoreCase))
+            .Name;
+
+        StatusMessage = $"{SelectedDisplay} display selected";
     }
+
 
 
 

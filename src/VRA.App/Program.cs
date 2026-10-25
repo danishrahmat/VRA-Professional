@@ -14,6 +14,7 @@ using VRA.App.Views.Pages;
 using VRA.Core.Data;
 using VRA.Core.Interfaces;
 using VRA.Core.Services;
+using VRA.App.Configuration;
 
 namespace VRA.App;
 
@@ -59,6 +60,8 @@ public static class Program
                 services.AddSingleton<MainWindow>();
                 services.AddTransient<NewPatientWindow>();
 
+                //configuration
+                services.AddSingleton<ReinforcementConfiguration>(DefaultReinforcementConfiguration.Create());
             });
     }
 

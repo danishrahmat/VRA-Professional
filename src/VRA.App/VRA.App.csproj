@@ -23,7 +23,6 @@
     <Folder Include="Assets\Audio\" />
     <Folder Include="Assets\Images\" />
     <Folder Include="Assets\Videos\" />
-    <Folder Include="Configuration\" />
     <Folder Include="Extensions\" />
     <Folder Include="Resources\" />
   </ItemGroup>

@@ -1,10 +1,17 @@
 ﻿
+using VRA.App.Configuration;
+
 namespace VRA.App.Services;
 
 public class SimulatedReinforcementService : IReinforcementService
 {
-    private static readonly string[] ValidDisplays =
-        ["Left", "Centre", "Right"];
+    private readonly ReinforcementConfiguration _configuration;
+
+    public SimulatedReinforcementService(
+        ReinforcementConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
 
     public void ShowAnimation(string display)
     {
@@ -28,12 +35,18 @@ public class SimulatedReinforcementService : IReinforcementService
             "[SIMULATION] Stop all reinforcement outputs.");
     }
 
-    private static void ValidateDisplay(string display)
+    private void ValidateDisplay(string display)
     {
-        if (!ValidDisplays.Contains(display))
+        bool isConfigured = _configuration.Displays.Any(
+            item => string.Equals(
+                item.Name,
+                display,
+                StringComparison.OrdinalIgnoreCase));
+
+        if (!isConfigured)
         {
             throw new ArgumentException(
-                $"Invalid display '{display}'. Use Left, Centre, or Right.",
+                $"Display '{display}' is not configured.",
                 nameof(display));
         }
     }
