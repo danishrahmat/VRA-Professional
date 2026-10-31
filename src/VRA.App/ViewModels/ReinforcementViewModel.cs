@@ -13,6 +13,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using VRA.App.VideoLibrary;
 using System.IO;
+using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace VRA.App.ViewModels;
 
@@ -447,10 +449,14 @@ public partial class ReinforcementViewModel : ObservableObject
     [RelayCommand]
     private void RefreshVideoFolders()
     {
+        string? selectedId = SelectedVideoFolder?.Id;
+
         VideoFolders = new ObservableCollection<ReinforcementVideoFolder>(
             _videoLibraryService.GetFolders());
 
-        SelectedVideoFolder ??= VideoFolders.FirstOrDefault();
+        SelectedVideoFolder =
+            VideoFolders.FirstOrDefault(folder => folder.Id == selectedId)
+            ?? VideoFolders.FirstOrDefault();
 
         RefreshVideos();
     }
@@ -474,6 +480,83 @@ public partial class ReinforcementViewModel : ObservableObject
             $"Found {AvailableVideos.Count} video(s) in {SelectedVideoFolder.Name}.";
     }
 
+    [RelayCommand]
+    private void BrowseVideoFolder()
+    {
+        if (SelectedVideoFolder is null)
+        {
+            StatusMessage = "Please select a video folder first.";
+            return;
+        }
+
+        var dialog = new OpenFolderDialog
+        {
+            Title = $"Select folder for {SelectedVideoFolder.Name}",
+            Multiselect = false
+        };
+
+        if (Directory.Exists(SelectedVideoFolder.FolderPath))
+        {
+            dialog.InitialDirectory = SelectedVideoFolder.FolderPath;
+        }
+
+        try
+        {
+            if (dialog.ShowDialog() != true)
+                return;
+
+            _videoLibraryService.SetFolderPath(
+                SelectedVideoFolder.Id,
+                dialog.FolderName);
+
+            string selectedId = SelectedVideoFolder.Id;
+
+            RefreshVideoFolders();
+
+            StatusMessage =
+                $"{SelectedVideoFolder?.Name} folder location updated.";
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+
+            StatusMessage =
+                "Unable to change video folder. Check Debug Output.";
+        }
+    }
+
+    [RelayCommand]
+    private void OpenVideoFolder()
+    {
+        if (SelectedVideoFolder is null)
+        {
+            StatusMessage = "Please select a video folder first.";
+            return;
+        }
+
+        try
+        {
+            string folderPath = SelectedVideoFolder.FolderPath;
+
+            Directory.CreateDirectory(folderPath);
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = folderPath,
+                UseShellExecute = true
+            });
+
+            StatusMessage =
+                $"Opened {SelectedVideoFolder.Name}.";
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+
+            StatusMessage =
+                "Unable to open video folder. Check Debug Output.";
+        }
+    }
     partial void OnSelectedVideoFolderChanged(
         ReinforcementVideoFolder? value)
     {
