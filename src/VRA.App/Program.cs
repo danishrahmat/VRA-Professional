@@ -19,6 +19,7 @@ using VRA.Core.Interfaces;
 using VRA.Core.Services;
 using VRA.App.Services.Audio;
 
+
 namespace VRA.App;
 
 public static class Program
@@ -46,7 +47,7 @@ public static class Program
                 services.AddSingleton<DisplayMappingSettingsService>();
                 services.AddSingleton<ReinforcementVideoLibraryService>();
                 services.AddSingleton<AudioDeviceDiscoveryService>();
-
+                services.AddSingleton<AudioPlaybackService>();
                 // ViewModels
                 services.AddTransient<DashboardViewModel>();
                 services.AddTransient<PatientDetailsViewModel>();

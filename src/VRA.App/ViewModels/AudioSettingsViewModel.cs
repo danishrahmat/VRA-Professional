@@ -13,6 +13,7 @@ namespace VRA.App.ViewModels;
 public partial class AudioSettingsViewModel : ObservableObject
 {
     private readonly AudioDeviceDiscoveryService _audioDeviceService;
+    private readonly AudioPlaybackService _audioPlaybackService;
 
     private readonly string _settingsPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -35,17 +36,25 @@ public partial class AudioSettingsViewModel : ObservableObject
     private string? rightDeviceId;
 
     [ObservableProperty]
+    private double leftVolume = 0.15;
+
+    [ObservableProperty]
+    private double centreVolume = 0.15;
+
+    [ObservableProperty]
+    private double rightVolume = 0.15;
+
+    [ObservableProperty]
     private string statusMessage = "Ready to detect audio devices.";
 
     public AudioSettingsViewModel(
-       AudioDeviceDiscoveryService audioDeviceService)
+    AudioDeviceDiscoveryService audioDeviceService,
+    AudioPlaybackService audioPlaybackService)
     {
         _audioDeviceService = audioDeviceService;
+        _audioPlaybackService = audioPlaybackService;
 
-        // First, detect the available USB audio devices.
         RefreshDevices();
-
-        // Then restore the saved assignments.
         LoadAssignments();
     }
 
@@ -126,6 +135,55 @@ public partial class AudioSettingsViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void TestLeftAudio()
+    {
+        TestAudio(LeftDeviceId, "LEFT", LeftVolume);
+    }
+
+    [RelayCommand]
+    private void TestCentreAudio()
+    {
+        TestAudio(CentreDeviceId, "CENTRE", CentreVolume);
+    }
+
+    [RelayCommand]
+    private void TestRightAudio()
+    {
+        TestAudio(RightDeviceId, "RIGHT", RightVolume);
+    }
+
+    [RelayCommand]
+    private void StopAudio()
+    {
+        _audioPlaybackService.Stop();
+        StatusMessage = "Audio playback stopped.";
+    }
+
+    private void TestAudio(
+    string? deviceId,
+    string position,
+    double volume)
+    {
+        if (string.IsNullOrWhiteSpace(deviceId))
+        {
+            StatusMessage = $"Please assign an audio device to {position}.";
+            return;
+        }
+
+        try
+        {
+            _audioPlaybackService.PlayTestTone(deviceId, volume);
+
+            StatusMessage =
+                $"Playing {position} audio at {volume:P0} volume.";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage =
+                $"Unable to play {position} audio: {ex.Message}";
+        }
+    }
+    [RelayCommand]
     private void SaveAssignments()
     {
         // Check for duplicate audio device assignments
@@ -155,7 +213,11 @@ public partial class AudioSettingsViewModel : ObservableObject
             {
                 LeftDeviceId = LeftDeviceId,
                 CentreDeviceId = CentreDeviceId,
-                RightDeviceId = RightDeviceId
+                RightDeviceId = RightDeviceId,
+
+                LeftVolume = LeftVolume,
+                CentreVolume = CentreVolume,
+                RightVolume = RightVolume
             };
 
             string? directory = Path.GetDirectoryName(_settingsPath);
@@ -205,6 +267,10 @@ public partial class AudioSettingsViewModel : ObservableObject
             LeftDeviceId = settings.LeftDeviceId;
             CentreDeviceId = settings.CentreDeviceId;
             RightDeviceId = settings.RightDeviceId;
+
+            LeftVolume = Math.Clamp(settings.LeftVolume ?? 0.15, 0.0, 1.0);
+            CentreVolume = Math.Clamp(settings.CentreVolume ?? 0.15, 0.0, 1.0);
+            RightVolume = Math.Clamp(settings.RightVolume ?? 0.15, 0.0, 1.0);
         }
         catch (Exception ex)
         {
@@ -217,8 +283,10 @@ public partial class AudioSettingsViewModel : ObservableObject
 public sealed class AudioDeviceMappingSettings
 {
     public string? LeftDeviceId { get; set; }
-
     public string? CentreDeviceId { get; set; }
-
     public string? RightDeviceId { get; set; }
+
+    public double? LeftVolume { get; set; }
+    public double? CentreVolume { get; set; }
+    public double? RightVolume { get; set; }
 }

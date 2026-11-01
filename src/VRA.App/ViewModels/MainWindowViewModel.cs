@@ -25,7 +25,7 @@ public partial class MainWindowViewModel : ObservableObject
     private Patient? currentPatient;
 
     [ObservableProperty]
-    private UserControl currentView;
+    private UserControl? currentView;
 
 
 
