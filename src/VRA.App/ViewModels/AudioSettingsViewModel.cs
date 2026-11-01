@@ -1,12 +1,16 @@
 ﻿
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Win32;
+using NAudio.Wave;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+using System.Windows;
 using VRA.App.Services.Audio;
+
 
 namespace VRA.App.ViewModels;
 
@@ -47,12 +51,21 @@ public partial class AudioSettingsViewModel : ObservableObject
     [ObservableProperty]
     private string statusMessage = "Ready to detect audio devices.";
 
+    [ObservableProperty]
+    private string playbackStatus = "Stopped"; 
+
+    [ObservableProperty]
+    private string? selectedAudioFilePath;
+
+
     public AudioSettingsViewModel(
     AudioDeviceDiscoveryService audioDeviceService,
     AudioPlaybackService audioPlaybackService)
     {
         _audioDeviceService = audioDeviceService;
         _audioPlaybackService = audioPlaybackService;
+
+        _audioPlaybackService.PlaybackFinished += OnPlaybackFinished;
 
         RefreshDevices();
         LoadAssignments();
@@ -153,9 +166,106 @@ public partial class AudioSettingsViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void BrowseAudioFile()
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "Select VRA Audio File",
+            Filter = "WAV Audio Files (*.wav)|*.wav",
+            CheckFileExists = true,
+            Multiselect = false
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            SelectedAudioFilePath = dialog.FileName;
+            StatusMessage = $"Selected audio: {Path.GetFileName(dialog.FileName)}";
+        }
+    }
+
+    [RelayCommand]
+    private void PlayLeftWave()
+    {
+        PlayWave(LeftDeviceId, "LEFT", LeftVolume);
+    }
+
+    [RelayCommand]
+    private void PlayCentreWave()
+    {
+        PlayWave(CentreDeviceId, "CENTRE", CentreVolume);
+    }
+
+    [RelayCommand]
+    private void PlayRightWave()
+    {
+        PlayWave(RightDeviceId, "RIGHT", RightVolume);
+    }
+
+    private void PlayWave(
+        string? deviceId,
+        string position,
+        double volume)
+    {
+        if (string.IsNullOrWhiteSpace(SelectedAudioFilePath))
+        {
+            StatusMessage = "Please select a WAV audio file first.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(deviceId))
+        {
+            StatusMessage = $"Please assign an audio device to {position}.";
+            return;
+        }
+
+        try
+        {
+            PlaybackStatus = "Playing";
+
+            _audioPlaybackService.PlayWaveFile(
+                deviceId,
+                SelectedAudioFilePath,
+                volume);
+
+            StatusMessage =
+                $"Playing {Path.GetFileName(SelectedAudioFilePath)} " +
+                $"through {position} at {volume:P0} volume.";
+        }
+        catch (Exception ex)
+        {
+            PlaybackStatus = "Error";
+            StatusMessage =
+                $"Unable to play {position} WAV audio: {ex.Message}";
+        }
+        
+    }
+
+    private void OnPlaybackFinished(
+    object? sender,
+    PlaybackFinishedEventArgs e)
+    {
+        Application.Current?.Dispatcher.Invoke(() =>
+        {
+            if (e.Exception is not null)
+            {
+                PlaybackStatus = "Error";
+                StatusMessage =
+                    $"Audio playback failed: {e.Exception.Message}";
+            }
+            else
+            {
+                PlaybackStatus = "Completed";
+                StatusMessage = "WAV playback completed.";
+            }
+        });
+    }
+
+    [RelayCommand]
     private void StopAudio()
     {
         _audioPlaybackService.Stop();
+
+        PlaybackStatus = "Stopped";
         StatusMessage = "Audio playback stopped.";
     }
 
