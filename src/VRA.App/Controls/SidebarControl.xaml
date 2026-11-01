@@ -37,6 +37,11 @@
          Icon="📺"
          Command="{Binding ReinforcementCommand}" />
 
+            <controls:NavigationButton
+        Title="Audio Settings"
+        Icon="🔊"
+        Command="{Binding AudioSettingsCommand}"/>
+
 
             <controls:NavigationButton
          Title="Reports"

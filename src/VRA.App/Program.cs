@@ -17,7 +17,7 @@ using VRA.App.Views.Pages;
 using VRA.Core.Data;
 using VRA.Core.Interfaces;
 using VRA.Core.Services;
-
+using VRA.App.Services.Audio;
 
 namespace VRA.App;
 
@@ -45,6 +45,7 @@ public static class Program
                 services.AddSingleton<DisplayDiscoveryService>();
                 services.AddSingleton<DisplayMappingSettingsService>();
                 services.AddSingleton<ReinforcementVideoLibraryService>();
+                services.AddSingleton<AudioDeviceDiscoveryService>();
 
                 // ViewModels
                 services.AddTransient<DashboardViewModel>();
@@ -54,16 +55,17 @@ public static class Program
                 services.AddSingleton<SidebarViewModel>();
                 services.AddTransient<NewPatientViewModel>();
                 services.AddTransient<HearingTestViewModel>();
-
                 services.AddTransient<ReinforcementViewModel>();
-                services.AddTransient<ReinforcementView>();
+                
+                services.AddTransient<AudioSettingsViewModel>();
                 // Views
                 services.AddTransient<DashboardView>();
                 services.AddTransient<PatientsView>();
                 services.AddTransient<PatientDetailsView>();
                 services.AddTransient<SidebarControl>();
                 services.AddTransient<HearingTestView>();
-
+                services.AddTransient<ReinforcementView>();
+                services.AddTransient<AudioSettingsView>();
                 // Windows
                 services.AddSingleton<MainWindow>();
                 services.AddTransient<NewPatientWindow>();

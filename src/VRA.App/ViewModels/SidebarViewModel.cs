@@ -38,4 +38,10 @@ public partial class SidebarViewModel : ObservableObject
     {
         _navigation.Navigate<ReinforcementView>();
     }
+
+    [RelayCommand]
+    private void AudioSettings()
+    {
+        _navigation.Navigate<AudioSettingsView>();
+    }
 }
